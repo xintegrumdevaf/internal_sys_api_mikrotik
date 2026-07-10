@@ -6,10 +6,9 @@ export class OltController {
 
     collectData = async (req: any, res: any) => {
         try {
+            Logger.info(`PAYLOAD: ${JSON.stringify(req.body)}`)
 
-            // const { sector, olt_name, pon, serial } = req.body
-
-            const result = await this.collectTechnicalData.execute(req)
+            const result = await this.collectTechnicalData.execute(req.body)
             Logger.success(`RESULT IN CONTROLLER: ${JSON.stringify(result)}`)
             res.json({ success: true, data: result })
         } catch (err: any) {

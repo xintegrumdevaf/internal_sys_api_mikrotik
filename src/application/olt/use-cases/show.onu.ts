@@ -1,6 +1,6 @@
 import { open } from "../../../infrastructure/ssh/session.service.js"
 import { SECTORS } from "../../../config/sectors.js";
-import { AdapterFactory } from "../../../infrastructure/adapters/adapter.factory.js";
+import { AdapterFactory } from "../../../infrastructure/olt/adapters/adapter.factory.js";
 import { Logger } from "../../../shared/utils/logger.js";
 
 

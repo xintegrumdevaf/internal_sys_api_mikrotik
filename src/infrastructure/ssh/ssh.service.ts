@@ -2,7 +2,7 @@
 
 import { Client, type ClientChannel, type ConnectConfig } from "ssh2";
 import { Logger } from "../../shared/utils/logger.js";
-import type { Step } from "../../shared/types/step.js";
+import type { Step } from "../../domain/olt/entities/step.entity.js";
 
 export interface SSHOptions {
     timeout?: number;
@@ -245,7 +245,7 @@ export class SSHService {
     // RUN STEPS (LOGIN / CONFIG FLOW)
     // =====================================================
 
-    public async runSteps(steps: any[]): Promise<string> {
+    public async runSteps(steps: Step[]): Promise<string> {
 
         Logger.info("RUN STEPS START", "SSH");
 
