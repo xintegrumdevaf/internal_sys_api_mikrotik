@@ -1,4 +1,4 @@
-import type { SectorConfig } from "../types/sector.js"
+import type { SectorConfig } from "../shared/types/sector.js"
 
 export const MIKROTIK_CREDENTIALS = {
     port: 8322,

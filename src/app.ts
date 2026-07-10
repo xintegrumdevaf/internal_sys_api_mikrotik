@@ -1,7 +1,9 @@
-import express from "express"
-import oltRoutes from "../src/routes/otl.routes.js"
+import express, { type Express } from "express"
+import oltRoutes from "./presentation/routers/otl.routes.js"
+import diagnosticRoutes from "./presentation/routers/diagnostic.routes.js"
 
-const app = express();
+
+const app: Express = express();
 
 app.use(express.json())
 
@@ -11,5 +13,6 @@ app.use(express.json())
 
 
 app.use("/olt", oltRoutes)
+app.use("/diagnostic", diagnosticRoutes)
 
 export default app;
