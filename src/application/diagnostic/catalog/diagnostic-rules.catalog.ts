@@ -12,7 +12,7 @@ export const DiagnosticRules = {
 
             min: -27,
 
-            max: -24
+            max: -25
 
         },
 
@@ -20,7 +20,7 @@ export const DiagnosticRules = {
 
             min: -40,
 
-            max: -27
+            max: -28
 
         }
     },

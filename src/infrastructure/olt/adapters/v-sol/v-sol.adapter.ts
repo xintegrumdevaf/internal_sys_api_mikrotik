@@ -2,13 +2,15 @@
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js";
 import type { Brand } from "../../../../domain/olt/enums/brand.enum.js";
 import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter.js";
-import { AdapterExecutionError } from "../../session/adapter-execution.error.js";
+import { Logger } from "../../../../shared/utils/logger.js";
 import { CommandExecutor } from "../../session/command-executor.js";
 import type { OltSession } from "../../session/olt.session.js";
 import { loginInterface } from "./commands/loginInterface.command.js";
 import { showOnuInfo } from "./commands/showOnuInfo.command.js";
+import { showOnuMacTable } from "./commands/showOnuMacTable.command.js";
 import { showOnuState } from "./commands/showOnuState.command.js";
 import { showPower } from "./commands/showPower.command.js";
+import { findMacByOnuId, parseMacTable } from "./parsers/mac.parser.js";
 import { findByAuthInfo, parseOnuTable } from "./parsers/onu.parser.js";
 import { parseOnuRxPower } from "./parsers/power.parser.js";
 import { parseOnuState } from "./parsers/state.parser.js";
@@ -37,7 +39,13 @@ export class VSolAdapter implements IOltAdapter {
             {
                 step: "rows",
                 command: () => showOnuInfo(),
-                parser: (output) => parseOnuTable(output)
+                parser: (output) => parseOnuTable(output),
+                interactions: [
+                    {
+                        wait: /--More--/i,
+                        send: " "
+                    }
+                ],
             },
 
             // =========================
@@ -51,12 +59,12 @@ export class VSolAdapter implements IOltAdapter {
                     const rows = ctx.rows;
                     const onu = findByAuthInfo(rows, serial);
 
-                    if (!onu) {
-                        throw new AdapterExecutionError(
-                            "ONU no encontrada",
-                            executor.getHistory()
-                        );
-                    }
+                    // if (!onu) {
+                    //     throw new AdapterExecutionError(
+                    //         "ONU no encontrada",
+                    //         executor.getHistory()
+                    //     );
+                    // }
 
                     return onu;
                 }
@@ -79,6 +87,22 @@ export class VSolAdapter implements IOltAdapter {
                 step: "power",
                 command: (ctx) => showPower(ctx.onu.id),
                 parser: (output) => parseOnuRxPower(output)
+            },
+            {
+                step: "exit interface",
+                command: (ctx: any) => "quit"
+            },
+
+            // =========================
+            // MAC
+            // =========================
+            {
+                step: "mac",
+                command: (ctx) => showOnuMacTable(pon),
+                parser: (out: any, ctx: any) => {
+                    const macs = parseMacTable(out);
+                    return findMacByOnuId(macs, ctx.onu.id) ?? null;
+                }
             }
         ]);
 
@@ -89,19 +113,56 @@ export class VSolAdapter implements IOltAdapter {
         const onu = result.context.onu;
         const state = result.context.state;
         const power = result.context.power;
+        const mac = result.context.mac
+
+        // if (!onu) {
+        //     throw new AdapterExecutionError(
+        //         "ONU no encontrada (final check)",
+        //         result.history
+        //     );
+        // }
+
+        // if (!state) {
+        //     throw new AdapterExecutionError(
+        //         "Estado de la ONU no encontrado",
+        //         result.history
+        //     );
+        // }
+
 
         if (!onu) {
-            throw new AdapterExecutionError(
-                "ONU no encontrada (final check)",
-                result.history
-            );
+
+            return {
+                brand: this.brand,
+
+                onu: null,
+
+                state: null,
+
+                power: null,
+
+                failedStep: "onu",
+
+                error: "ONU no encontrada",
+
+                _history: executor.getHistory()
+            };
+
         }
 
+
         if (!state) {
-            throw new AdapterExecutionError(
-                "Estado de la ONU no encontrado",
-                result.history
-            );
+
+            return {
+                brand: this.brand,
+                onu,
+                state: null,
+                power: null,
+                failedStep: "state",
+                error: "Estado ONU no disponible",
+                _history: result.history
+            };
+
         }
 
         return {
@@ -112,6 +173,8 @@ export class VSolAdapter implements IOltAdapter {
             state,
 
             power: power?.rxPower ?? null,
+
+            mac: mac ?? null,
 
             _history: result.history,
 

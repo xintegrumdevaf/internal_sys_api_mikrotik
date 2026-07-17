@@ -25,13 +25,13 @@ export class CollectTechnicalDataUseCase {
             throw new Error(`OLT ${olt_name} no existe en ${sector}`);
         }
         // const { session, brand } = await this.connectionManager.connect(sectorConfig.host, olt)
-        const session = await this.connectionManager.connect(sectorConfig.host, olt)
+        const session = await this.connectionManager.connect(sectorConfig.host, sectorConfig.port, olt)
         // const sectorConfig = SECTORS[sector];
         // const olt = sectorConfig?.olts[olt_name]
         // if (!olt) {
         //     throw new Error("Olt no encontrada")
         // }
-        const adapter = AdapterFactory.create(olt.brand, session)
+        const adapter = AdapterFactory.create(session, olt.brand)
         const result = await adapter.showOnu(pon, serial)
         Logger.success(`RESULT IN USECASE: ${JSON.stringify(result)}`)
         await session.close()

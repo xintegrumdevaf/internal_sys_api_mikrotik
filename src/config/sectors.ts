@@ -3,7 +3,7 @@ import { Brand } from "../domain/olt/enums/brand.enum.js"
 
 
 export const MIKROTIK_CREDENTIALS = {
-    port: 8322,
+    // port: 8322,
     username: "ANGEL",
     password: "D1q6G7u0C7"
 }
@@ -11,6 +11,7 @@ export const MIKROTIK_CREDENTIALS = {
 export const SECTORS: SectorConfig = {
     pomasqui: {
         host: "45.70.201.81",
+        port: 8322,
         olts: {
             bicentenario: {
                 ip: "172.40.0.132",
@@ -28,6 +29,7 @@ export const SECTORS: SectorConfig = {
     },
     sanAntonio: {
         host: "177.234.217.27",
+        port: 8322,
         olts: {
             kyngtype: {
                 ip: "172.40.0.146",
@@ -51,6 +53,7 @@ export const SECTORS: SectorConfig = {
     },
     pifo: {
         host: "177.234.212.178",
+        port: 8220,
         olts: {
             pifo: {
                 ip: "172.40.25.2",
@@ -62,6 +65,7 @@ export const SECTORS: SectorConfig = {
     },
     calacali: {
         host: "177.234.217.26",
+        port: 8321,
         olts: {
             calacali: {
                 ip: "172.40.0.2",
@@ -71,8 +75,9 @@ export const SECTORS: SectorConfig = {
             }
         }
     },
-    cuenca: {
+    bellavista: {
         host: "181.78.197.184",
+        port: 8222,
         olts: {
             bellavista: {
                 ip: "172.40.0.4",
@@ -80,16 +85,41 @@ export const SECTORS: SectorConfig = {
                 password: "sistema123#",
                 brand: Brand.HUAWEI
             },
+        }
+    },
+    totoracocha: {
+        host: "181.78.199.158",
+        port: 8222,
+        olts: {
             totoracocha: {
                 ip: "172.40.0.3",
-                username: "@dmin123",
-                password: "@dmin123",
+                username: "root",
+                password: "admin123",
                 brand: Brand.HUAWEI
             }
         }
     },
+    // cuenca: {
+    //     host: "181.78.197.184",
+    //     port: 8222,
+    //     olts: {
+    //         bellavista: {
+    //             ip: "172.40.0.4",
+    //             username: "sistema",
+    //             password: "sistema123#",
+    //             brand: Brand.HUAWEI
+    //         },
+    //         totoracocha: {
+    //             ip: "172.40.0.3",
+    //             username: "@dmin123",
+    //             password: "@dmin123",
+    //             brand: Brand.HUAWEI
+    //         }
+    //     }
+    // },
     quitoSur: {
         host: "200.24.136.33",
+        port: 8332,
         olts: {
             santaBarbara: {
                 ip: "172.40.5.4",

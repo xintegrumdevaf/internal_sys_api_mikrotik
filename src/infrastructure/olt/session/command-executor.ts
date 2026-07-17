@@ -1,6 +1,7 @@
 import type { OltSession } from "./olt.session.js";
 import type { CommandHistory } from "./command-history.js";
 import { AdapterExecutionError } from "./adapter-execution.error.js";
+import type { CommandInteraction } from "./command-interaction.js";
 
 export type Step<TCtx> = {
     step: keyof TCtx & string;
@@ -8,6 +9,8 @@ export type Step<TCtx> = {
     command: (ctx: TCtx) => string | Promise<string>;
 
     parser?: (output: string, ctx: TCtx) => any;
+
+    interactions?: CommandInteraction[];
 
     required?: boolean;
 };
@@ -112,7 +115,7 @@ export class CommandExecutor {
 
                 const command = await step.command(context);
 
-                const result = await this.session.execute(command);
+                const result = await this.session.execute(command, step.interactions);
 
                 const parsed = step.parser
                     ? step.parser(result.output, context)

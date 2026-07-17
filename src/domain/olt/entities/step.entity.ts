@@ -1,7 +1,11 @@
 export interface Step {
-
-    wait: RegExp;
-
+    expect: RegExp;
     command: string | (() => string);
+    success: StepResult[];
+}
 
+export interface StepResult {
+    name: string;
+    regex: RegExp;
+    continue: boolean
 }

@@ -1,11 +1,11 @@
-import type { Olt } from "../../../../../domain/olt/entities/sector.entity.js";
-import type { Step } from "../../../../../domain/olt/entities/step.entity.js";
+import type { Olt } from "../../../../../domain/olt/entities/sector.entity.js"
+import type { Step } from "../../../../../domain/olt/entities/step.entity.js"
 
 
 export const loginSteps = (olt: Olt): Step[] => [
 
     // ==========================
-    // ENTRAR POR TELNET
+    // TELNET HACIA OLT
     // ==========================
     {
         expect: />\s*$/i,
@@ -14,8 +14,26 @@ export const loginSteps = (olt: Olt): Step[] => [
 
         success: [
             {
-                name: "telnet_login",
-                regex: /User name:|login:/i,
+                name: "telnet_connected",
+                regex: /Press any key to login/i,
+                continue: true
+            }
+        ]
+    },
+
+
+    // ==========================
+    // CONFIRMAR LOGIN
+    // ==========================
+    {
+        expect: /Press any key to login/i,
+
+        command: "\n",
+
+        success: [
+            {
+                name: "username",
+                regex: /Username:/i,
                 continue: true
             }
         ]
@@ -26,14 +44,14 @@ export const loginSteps = (olt: Olt): Step[] => [
     // USUARIO
     // ==========================
     {
-        expect: /User name:|login:/i,
+        expect: /Username:/i,
 
         command: olt.username,
 
         success: [
             {
                 name: "password",
-                regex: /User password:|Password:/i,
+                regex: /Password:/i,
                 continue: true
             }
         ]
@@ -44,7 +62,7 @@ export const loginSteps = (olt: Olt): Step[] => [
     // PASSWORD
     // ==========================
     {
-        expect: /User password:|Password:/i,
+        expect: /Password:/i,
 
         command: olt.password,
 
@@ -64,17 +82,17 @@ export const loginSteps = (olt: Olt): Step[] => [
     {
         expect: /[>#]\s*$/i,
 
-        command: "enable",
+        command: "en",
 
         success: [
             {
-                name: "enable_password",
-                regex: /Password:|User password:/i,
+                name: "enable_mode",
+                regex: /SOLES\(pri\)>\s*$/i,
                 continue: true
             },
 
             {
-                name: "enabled",
+                name: "enable_hash",
                 regex: /#\s*$/i,
                 continue: true
             }
@@ -83,38 +101,20 @@ export const loginSteps = (olt: Olt): Step[] => [
 
 
     // ==========================
-    // ENABLE PASSWORD
+    // CONFIG TERMINAL
     // ==========================
     {
-        expect: /Password:|User password:/i,
+        expect: /SOLES\(pri\)>\s*$/i,
 
-        command: olt.password,
-
-        success: [
-            {
-                name: "enabled",
-                regex: /#\s*$/i,
-                continue: true
-            }
-        ]
-    },
-
-
-    // ==========================
-    // CONFIG MODE
-    // ==========================
-    {
-        expect: /#\s*$/i,
-
-        command: "config",
+        command: "configure terminal",
 
         success: [
             {
                 name: "config_mode",
-                regex: /\(config.*\)#\s*$/i,
+                regex: /\(config.*\)[#>]\s*$/i,
                 continue: true
             }
         ]
     }
 
-];
+]

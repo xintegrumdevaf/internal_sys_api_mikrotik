@@ -7,12 +7,13 @@ import { Brand } from "../../../domain/olt/enums/brand.enum.js";
 import { loginSteps as cdataLoginSteps } from "../adapters/c-data/steps/login.steps.js";
 import { loginSteps as vsolLoginSteps } from "../adapters/v-sol/steps/login.steps.js";
 import { loginSteps as huaweiLoginSteps } from "../adapters/huawei/steps/login.steps.js";
+import { loginSteps as kingtypeLoginSteps } from "../adapters/kingtype/steps/login.steps.js";
 
 const LOGIN_STEPS = {
     [Brand.CDATA]: cdataLoginSteps,
     [Brand.HUAWEI]: huaweiLoginSteps,
     [Brand.VSOL]: vsolLoginSteps,
-    [Brand.KINGTYPE]: () => [],
+    [Brand.KINGTYPE]: kingtypeLoginSteps,
     [Brand.SM]: () => []
 }
 
@@ -20,11 +21,12 @@ export class OltConnectionManager {
 
     async connect(
         host: string,
+        port: number,
         olt: Olt
     ): Promise<OltSession> {
         const sshConfig = {
             host: host,
-            port: MIKROTIK_CREDENTIALS.port ?? 22,
+            port,
             username: MIKROTIK_CREDENTIALS.username,
             password: MIKROTIK_CREDENTIALS.password
         };

@@ -1,8 +1,6 @@
-export interface Mac {
-
+export interface VsolMacInfo {
     mac: string;
-    ontId: number;
+    onuId: number;
     vlan: number;
     type: string;
-
 }

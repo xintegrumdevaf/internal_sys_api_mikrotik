@@ -11,5 +11,6 @@ export interface Olt {
 
 export interface LocationConfig {
     host: string;
+    port: number,
     olts: Record<string, Olt>
 }

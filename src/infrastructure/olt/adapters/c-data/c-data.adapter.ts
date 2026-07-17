@@ -56,7 +56,7 @@ export class CDataAdapter implements IOltAdapter {
 
                 parser: (out: any, ctx: any) => {
                     const macs = parseMacTable(out);
-                    return macs.find(m => m.onu === ctx.ont.id);
+                    return macs.find(m => m.onu === ctx.ont.id)?.mac ?? null;
                 }
             }
         ]);

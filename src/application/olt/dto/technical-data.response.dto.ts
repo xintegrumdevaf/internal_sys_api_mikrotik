@@ -9,9 +9,9 @@ export interface TechnicalDataResponseDTO {
 
     brand: Brand;
 
-    onu: Onu;
+    onu: Onu | null;
 
-    state: OnuState;
+    state: OnuState | null;
 
     power?: number | null;
 
@@ -20,5 +20,7 @@ export interface TechnicalDataResponseDTO {
     _history: CommandHistory[]
 
     failedStep: string | null
+    
+    error?: string | null;
 
 }
