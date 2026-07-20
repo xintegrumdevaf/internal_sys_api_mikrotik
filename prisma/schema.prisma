@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/infrastructure/db/prisma/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model DiagnosticSession {
+  id             String    @id @default(uuid())
+  conversationId String    @unique
+  status         String
+  currentStep    String?
+  context        Json
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  expiresAt      DateTime?
+
+  @@index([conversationId])
+}

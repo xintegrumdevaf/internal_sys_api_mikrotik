@@ -1,57 +1,78 @@
+
+import { DiagnosticStatus } from "../../../domain/diagnostic/enums/diagnostic.status.js";
 import { FindingType } from "../../../domain/diagnostic/enums/finding.type.js";
 import { Severity } from "../../../domain/diagnostic/enums/severity.js";
 
-export const FindingCatalog: Record<FindingType, Record<string, any>> = {
+export interface FindingSettings {
+    severity: Severity;
+    stopExecution: boolean;
+    status: DiagnosticStatus;
+}
+
+export const FindingCatalog: Record<FindingType, FindingSettings> = {
+
+    // ONU
+
+    [FindingType.ONU_NOT_FOUND]: {
+        severity: Severity.CRITICAL,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
+    },
+
     [FindingType.ONU_OFFLINE]: {
         severity: Severity.HIGH,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
+    },
 
-        stopExecution: true
+    // Optical
+
+    [FindingType.POWER_NOT_AVAILABLE]: {
+        severity: Severity.CRITICAL,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
+    },
+
+    [FindingType.CRITICAL_LOW_POWER]: {
+        severity: Severity.CRITICAL,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
     },
 
     [FindingType.LOW_POWER]: {
         severity: Severity.HIGH,
-
-        stopExecution: false
+        stopExecution: false,
+        status: DiagnosticStatus.WARNING
     },
+
+    [FindingType.HIGH_POWER]: {
+        severity: Severity.CRITICAL,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
+    },
+
+    // Layer 2
 
     [FindingType.NO_MAC]: {
         severity: Severity.MEDIUM,
-
-        stopExecution: false
+        stopExecution: false,
+        status: DiagnosticStatus.WARNING
     },
 
-    [FindingType.ONU_NOT_FOUND]: {
-        severity: Severity.CRITICAL,
+    // Configuration
 
-        stopExecution: true
-    },
-    [FindingType.ONU_ONLINE]: {
-        severity: Severity.LOW,
-        stopExecution: false
-    },
-    [FindingType.HIGH_POWER]: {
-        severity: Severity.CRITICAL,
-
-        stopExecution: true
-    },
     [FindingType.CONFIG_ERROR]: {
         severity: Severity.CRITICAL,
-
-        stopExecution: true
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
     },
-    [FindingType.POWER_NOT_AVAILABLE]: {
-        severity: Severity.CRITICAL,
 
-        stopExecution: true
-    },
-    [FindingType.CRITICAL_LOW_POWER]: {
-        severity: Severity.CRITICAL,
+    // Unknown
 
-        stopExecution: true
-    },
     [FindingType.UNKNOWN]: {
         severity: Severity.CRITICAL,
-
-        stopExecution: true
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
     }
+
 };

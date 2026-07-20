@@ -1,4 +1,7 @@
+import type { DiagnosticWorkflow } from "../../../domain/diagnostic/entities/diagnostic-workflow.js";
 import type { Diagnostic } from "../../../domain/diagnostic/entities/diagnostic.js";
+import type { DiagnosticMessage } from "../../../domain/diagnostic/value-objects/diagnostic.message.js";
+import type { TechnicalDataResponseDTO } from "../../olt/dto/technical-data.response.dto.js";
 
 export interface DiagnosticResponseDTO {
 
@@ -6,36 +9,12 @@ export interface DiagnosticResponseDTO {
 
     diagnostic: Diagnostic;
 
-    workflow: {
+    workflow: DiagnosticWorkflow;
 
-        nextAction: string;
+    technical: TechnicalDataResponseDTO;
 
-        stopExecution: boolean;
+    instruction: string | null
 
-    };
-
-    instructions: {
-
-        title: string;
-
-        description: string;
-
-        expectedMedia?: string[];
-
-    };
-
-    technical: {
-
-        profile: string;
-
-        onu: unknown;
-
-        state: unknown;
-
-        power: number | null;
-
-        mac?: unknown;
-
-    };
+    // messages: DiagnosticMessage[];
 
 }

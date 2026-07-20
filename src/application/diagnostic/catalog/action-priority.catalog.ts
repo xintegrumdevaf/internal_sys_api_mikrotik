@@ -1,7 +1,7 @@
 import { ActionType } from "../../../domain/diagnostic/enums/action.type.js";
 
 export const ActionPriorityCatalog: Record<ActionType, number> = {
-    [ActionType.REQUEST_MEDIA]: 1,
+    [ActionType.ASK_LED_STATUS]: 1,
     [ActionType.REQUEST_INFORMATION]: 1,
     [ActionType.REBOOT_ONU]: 2,
     [ActionType.VERIFY_POWER]: 2,
@@ -32,7 +32,32 @@ export const ActionPriorityCatalog: Record<ActionType, number> = {
     //     stopExecution: true
     // }
     ,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [ActionType.CONTINUE]: 0,
     [ActionType.RECHECK]: 0,
-    [ActionType.FINISH]: 0
+    [ActionType.FINISH]: 0,
 }

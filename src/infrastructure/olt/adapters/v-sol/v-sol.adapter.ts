@@ -170,7 +170,7 @@ export class VSolAdapter implements IOltAdapter {
 
             onu,
 
-            state,
+            state: { ...state, runState: state.omccState !== "disable" ? "Online" : "Offline" },
 
             power: power?.rxPower ?? null,
 

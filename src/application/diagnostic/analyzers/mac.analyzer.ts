@@ -1,6 +1,7 @@
 import { ActionType } from "../../../domain/diagnostic/enums/action.type.js";
 import { FindingType } from "../../../domain/diagnostic/enums/finding.type.js";
 import type { DiagnosticContext } from "../../../domain/diagnostic/value-objects/diagnostic.context.js";
+import { Logger } from "../../../shared/utils/logger.js";
 import type { IDiagnosticAnalyzer } from "../interfaces/idiagnostic.analyzer.js";
 
 export class MacAnalyzer implements IDiagnosticAnalyzer {
@@ -8,7 +9,8 @@ export class MacAnalyzer implements IDiagnosticAnalyzer {
     supports(context: DiagnosticContext): boolean {
 
         // Solo aplica para OLT Profile New
-        return context.technical.profile === "new";
+        // return context.technical.profile === "new";
+        return true;
 
     }
 
@@ -16,9 +18,11 @@ export class MacAnalyzer implements IDiagnosticAnalyzer {
 
         const mac = context.technical.mac;
 
+        Logger.info(`MAC IN ANALYZER: ${mac}`)
+
         if (!mac) {
 
-            context.warn(
+            context.report(
 
                 FindingType.NO_MAC,
 
@@ -30,19 +34,19 @@ export class MacAnalyzer implements IDiagnosticAnalyzer {
 
         }
 
-        if (!mac.mac || mac.mac.trim() === "") {
+        // if (!mac.mac || mac.mac.trim() === "") {
 
-            context.warn(
+        //     context.warn(
 
-                FindingType.NO_MAC,
+        //         FindingType.NO_MAC,
 
-                ActionType.REQUEST_INFORMATION
+        //         ActionType.REQUEST_INFORMATION
 
-            );
+        //     );
 
-            return;
+        //     return;
 
-        }
+        // }
 
     }
 

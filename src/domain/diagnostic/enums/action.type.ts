@@ -2,20 +2,20 @@ export enum ActionType {
 
     CONTINUE = "continue",
 
-    REQUEST_MEDIA = "request_media",
+    ASK_LED_STATUS = "ask_led_status",
 
     REQUEST_INFORMATION = "request_information",
 
-    SCHEDULE_VISIT = "schedule_visit",
+    VERIFY_POWER = "verify_power",
 
     REBOOT_ONU = "reboot_onu",
 
     RECHECK = "recheck",
 
+    SCHEDULE_VISIT = "schedule_visit",
+
     TRANSFER_SUPPORT = "transfer_support",
 
-    FINISH = "finish",
-
-    VERIFY_POWER = "verify_power"
+    FINISH = "finish"
 
 }

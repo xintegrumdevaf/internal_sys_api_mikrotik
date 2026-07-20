@@ -1,16 +1,24 @@
 import { ActionPriorityCatalog } from "../../../application/diagnostic/catalog/action-priority.catalog.js";
+import { DiagnosticInstructions } from "../../../application/diagnostic/catalog/diagnostic-instructions.catalog.js";
 import { FindingCatalog } from "../../../application/diagnostic/catalog/finding.catalog.js";
+import { WorkflowCatalog } from "../../../application/diagnostic/catalog/workflow.catalog.js";
 import type { TechnicalDataResponseDTO } from "../../../application/olt/dto/technical-data.response.dto.js";
+
 import type { DiagnosticAction } from "../entities/diagnostic.action.js";
 import type { DiagnosticFinding } from "../entities/diagnostic.finding.js";
-import type { DiagnosticMessage } from "../entities/diagnostic.message.js";
+
 import type { ActionType } from "../enums/action.type.js";
 import { DiagnosticStatus } from "../enums/diagnostic.status.js";
 import type { FindingType } from "../enums/finding.type.js";
-import { Severity } from "../enums/severity.js";
+import { WorkflowStatus } from "../enums/workflow-status.enum.js";
+import type { WorkflowStep } from "../enums/workflow-step.enum.js";
+
 
 export class DiagnosticContext {
-    constructor(public readonly technical: TechnicalDataResponseDTO) { }
+
+    constructor(
+        public readonly technical: TechnicalDataResponseDTO
+    ) { }
 
     status = DiagnosticStatus.SUCCESS;
 
@@ -18,45 +26,102 @@ export class DiagnosticContext {
 
     actions: DiagnosticAction[] = [];
 
-    // messages: DiagnosticMessage[] = []
+    instruction: string | null = null;
 
-    addFinding(finding: DiagnosticFinding) {
-        const exists = this.findings.some(f => f.type == finding.type)
+    workflow = {
+        status: WorkflowStatus.COMPLETED,
+        currentStep: null as WorkflowStep | null,
+        stopExecution: false
+    };
 
-        if (!exists) {
-            this.findings.push(finding)
-        }
-    }
-
-    addAction(
-        action: DiagnosticAction
+    addFinding(
+        finding: DiagnosticFinding
     ) {
 
         const exists =
-            this.actions.some(
-
-                a => a.type === action.type
-
-            );
+            this.findings.some(f => f.type === finding.type);
 
         if (!exists) {
+            this.findings.push(finding);
+        }
 
-            this.actions.push(action);
-
+        if (finding.stopExecution) {
+            this.workflow.stopExecution = true;
         }
 
     }
 
-    // addMessage(
-    //     message: DiagnosticMessage
-    // ) {
+    addAction(action: DiagnosticAction) {
 
-    //     this.messages.push(message);
+        const exists =
+            this.actions.some(a => a.type === action.type);
 
-    // }
+        if (exists) {
+            return;
+        }
 
-    setStatus(status: DiagnosticStatus) {
+        this.actions.push(action);
+
+        const workflow =
+            WorkflowCatalog[action.type];
+
+        if (!workflow) {
+            return;
+        }
+
+        this.workflow.status =
+            workflow.status;
+
+        this.workflow.currentStep =
+            workflow.step;
+
+        this.workflow.stopExecution =
+            workflow.stop;
+
+    }
+
+    setInstruction(
+        instruction: string
+    ) {
+
+        this.instruction = instruction;
+
+    }
+
+    waitUser(
+        step: WorkflowStep
+    ) {
+
+        this.workflow.status = WorkflowStatus.WAITING_USER;
+        this.workflow.currentStep = step;
+        this.workflow.stopExecution = true;
+
+    }
+
+    waitSystem(
+        step: WorkflowStep
+    ) {
+
+        this.workflow.status = WorkflowStatus.WAITING_SYSTEM;
+        this.workflow.currentStep = step;
+        this.workflow.stopExecution = true;
+
+    }
+
+    complete() {
+
+        this.workflow.status = WorkflowStatus.COMPLETED;
+        this.workflow.currentStep = null;
+        this.workflow.stopExecution = true;
+
+    }
+
+    setStatus(
+        status: DiagnosticStatus
+    ) {
+
         const priority = {
+
             SUCCESS: 0,
 
             WARNING: 1,
@@ -64,121 +129,64 @@ export class DiagnosticContext {
             FAILED: 2,
 
             CRITICAL: 3
-        }
+
+        };
 
         if (priority[status] > priority[this.status]) {
-            this.status = status
+            this.status = status;
         }
+
     }
 
+    report(
+        finding: FindingType,
+        action?: ActionType
+    ) {
 
-
-    fail(finding: FindingType, action: ActionType) {
-        const findingSettings = FindingCatalog[finding]
-        const { severity, stopExecution } = findingSettings
+        const settings =
+            FindingCatalog[finding];
 
         this.addFinding({
 
             type: finding,
-            severity,
-            stopExecution,
+
+            severity: settings.severity,
+
+            stopExecution: settings.stopExecution,
+
             description: finding
 
         });
 
         if (action) {
-            const priority = ActionPriorityCatalog[action]
 
             this.addAction({
-                priority,
+
+                priority: ActionPriorityCatalog[action],
+
                 type: action,
-                // stopExecution: false
-            })
-        }
 
-        this.setStatus(DiagnosticStatus.FAILED)
-
-
-    }
-
-    warn(finding: FindingType, action: ActionType) {
-        const findingSettings = FindingCatalog[finding]
-        const { severity, stopExecution } = findingSettings
-
-        this.addFinding({
-
-            type: finding,
-            severity,
-            stopExecution,
-            description: finding
-
-        });
-
-        if (action) {
-            const priority = ActionPriorityCatalog[action]
-
-            this.addAction({
-                priority,
-                type: action,
-                // stopExecution: false
-            });
-
-        }
-
-        this.setStatus(
-            DiagnosticStatus.WARNING
-        );
-    }
-
-    critical(finding: FindingType, action: ActionType) {
-        const findingSettings = FindingCatalog[finding]
-        const { severity, stopExecution } = findingSettings
-
-        this.addFinding({
-
-            type: finding,
-            severity,
-            stopExecution,
-            description: finding
-
-        });
-
-        if (action) {
-            const priority = ActionPriorityCatalog[action]
-
-            this.addAction({
-                priority,
-                type: action,
-                // stopExecution: false
+                stopExecution: settings.stopExecution
 
             });
 
         }
 
-        this.setStatus(
-            DiagnosticStatus.CRITICAL
-        );
-    }
+        const instruction =
+            DiagnosticInstructions[finding];
 
-    success(action: ActionType) {
-        if (action) {
-            const priority = ActionPriorityCatalog[action]
-
-            this.addAction({
-                priority,
-                type: action,
-                // stopExecution: false
-
-            });
-
+        if (instruction) {
+            this.setInstruction(instruction);
         }
 
-        this.setStatus(
-            DiagnosticStatus.SUCCESS
-        );
+        this.setStatus(settings.status);
+
     }
 
     shouldStop() {
-        return this.findings.some(f => f.stopExecution)
+
+        return this.workflow.stopExecution;
+
     }
+
 }

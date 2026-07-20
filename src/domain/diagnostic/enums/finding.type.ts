@@ -1,24 +1,22 @@
 export enum FindingType {
 
-    ONU_ONLINE = "onu_online",
-
+    // ONU
+    ONU_NOT_FOUND = "onu_not_found",
     ONU_OFFLINE = "onu_offline",
 
-    LOW_POWER = "low_power",
-
+    // Potencia óptica
+    POWER_NOT_AVAILABLE = "power_not_available",
     CRITICAL_LOW_POWER = "critical_low_power",
-
+    LOW_POWER = "low_power",
     HIGH_POWER = "high_power",
 
+    // Red
     NO_MAC = "no_mac",
 
+    // Configuración
     CONFIG_ERROR = "config_error",
 
-    UNKNOWN = "unknown",
-
-    ONU_NOT_FOUND = "onu_not_found",
-
-    POWER_NOT_AVAILABLE = "power_not_available"
-    
+    // Genérico
+    UNKNOWN = "unknown"
 
 }

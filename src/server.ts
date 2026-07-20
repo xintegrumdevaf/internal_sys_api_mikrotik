@@ -1,7 +1,9 @@
+import "dotenv/config";
 import app from "./app.js"
-import dotenv from "dotenv"
 
-dotenv.config();
+
+// Logger.info(process.cwd());
+// Logger.info(process.env.DATABASE_URL);
 
 const PORT = process.env.PORT || 3001
 

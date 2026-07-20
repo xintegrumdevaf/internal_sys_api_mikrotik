@@ -73,7 +73,7 @@ export class KingtypeAdapter implements IOltAdapter {
         return {
             brand: this.brand,
             onu,
-            state: {},
+            state: { runState: onu?.mibReady ? "Online" : "Offline" },
             mac,
             power,
             _history: history,

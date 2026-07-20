@@ -6,6 +6,6 @@ export interface DiagnosticAction {
 
     priority: number;
 
-    // stopExecution: boolean;
+    stopExecution: boolean;
 
 }

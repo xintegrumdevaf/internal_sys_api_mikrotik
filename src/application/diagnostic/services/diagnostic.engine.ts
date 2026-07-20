@@ -18,21 +18,12 @@ export class DiagnosticEngine {
 
             await analyzer.analyze(context)
 
+            if (context.shouldStop()) {
+                break
+            }
+
         }
 
         return context
-        // const context: DiagnosticContext = {
-        //     technical: technicalData,
-        //     findings: [],
-        //     actions: [],
-        //     warnings: [],
-        //     result: DiagnosticStatus.FAILED
-        // }
-
-        // for (const analyzer of this.analyzers) {
-        //     await analyzer.analyze(context)
-        // }
-
-        // return context;
     }
 }

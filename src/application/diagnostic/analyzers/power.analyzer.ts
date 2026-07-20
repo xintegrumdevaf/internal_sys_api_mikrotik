@@ -19,7 +19,7 @@ export class PowerAnalyzer implements IDiagnosticAnalyzer {
 
         if (power == null) {
 
-            context.critical(
+            context.report(
 
                 FindingType.POWER_NOT_AVAILABLE,
 
@@ -39,7 +39,7 @@ export class PowerAnalyzer implements IDiagnosticAnalyzer {
 
         if (powerLevel === OpticalPowerLevel.WARNING) {
 
-            context.warn(
+            context.report(
 
                 FindingType.LOW_POWER,
 
@@ -51,7 +51,7 @@ export class PowerAnalyzer implements IDiagnosticAnalyzer {
 
         if (powerLevel === OpticalPowerLevel.CRITICAL) {
 
-            context.fail(
+            context.report(
 
                 FindingType.CRITICAL_LOW_POWER,
 
