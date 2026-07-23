@@ -1,6 +1,6 @@
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js";
 import type { Brand } from "../../../../domain/olt/enums/brand.enum.js";
-import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter.js";
+import type { OltAdapterPort } from "../../../../application/ports/olt-adapter.port.js";
 import { Logger } from "../../../../shared/utils/logger.js";
 import { CommandExecutor } from "../../session/command-executor.js";
 import type { OltSession } from "../../session/olt.session.js";
@@ -16,7 +16,7 @@ import { findMacByOntId, parseMacTable } from "./parsers/mac.parser.js";
 import { parseOntInfo } from "./parsers/ont.parser.js";
 import { parseRxOpticalPower } from "./parsers/power.parser.js";
 
-export class HuaweiAdapter implements IOltAdapter {
+export class HuaweiAdapter implements OltAdapterPort {
     constructor(private readonly session: OltSession, private readonly brand: Brand) { }
 
 

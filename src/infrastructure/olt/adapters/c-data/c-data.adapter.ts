@@ -7,7 +7,7 @@ import { findOntBySN, parseAutofindOnts, parseOntInfo } from "./parsers/ont.pars
 import { parseOntRxPower } from "./parsers/power.parser.js";
 import { parseMacTable } from "./parsers/mac.parser.js";
 import { CommandExecutor } from "../../session/command-executor.js";
-import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter.js";
+import type { OltAdapterPort } from "../../../../application/ports/olt-adapter.port.js";
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js";
 import type { Brand } from "../../../../domain/olt/enums/brand.enum.js";
 import { showOntHookDevices } from "./commands/show-ont-hook-devices.command.js";
@@ -15,7 +15,7 @@ import { Logger } from "../../../../shared/utils/logger.js";
 import { setupUserDevice } from "./commands/setup-user-device.command.js";
 import { showOntHookBySn } from "./commands/show-ont-hook-by-sn.command.js";
 
-export class CDataAdapter implements IOltAdapter {
+export class CDataAdapter implements OltAdapterPort {
     constructor(private readonly session: OltSession, private readonly brand: Brand) { }
 
     async showOnu(pon: string, serial: string): Promise<TechnicalDataResponseDTO> {

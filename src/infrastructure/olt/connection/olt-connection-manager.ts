@@ -1,3 +1,4 @@
+import type { OltConnectionPort } from "../../../application/ports/olt-connection.port.js";
 import { MIKROTIK_CREDENTIALS } from "../../../config/sectors.js";
 import { Logger } from "../../../shared/utils/logger.js";
 import { OltSession } from "../session/olt.session.js";
@@ -17,7 +18,7 @@ const LOGIN_STEPS = {
     [Brand.SM]: () => []
 }
 
-export class OltConnectionManager {
+export class OltConnectionManager implements OltConnectionPort {
 
     async connect(
         host: string,

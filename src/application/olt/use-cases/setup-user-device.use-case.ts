@@ -1,15 +1,15 @@
+import type { OltConnectionPort } from "../../ports/olt-connection.port.js";
+import type { OltSession } from "../../../infrastructure/olt/session/olt.session.js";
 import { SECTORS } from "../../../config/sectors.js";
 import { AdapterFactory } from "../../../infrastructure/olt/adapters/adapter.factory.js";
-import type { OltConnectionManager } from "../../../infrastructure/olt/connection/olt-connection-manager.js";
 import type { OltRequestDTO } from "../dto/olt.request.dto.js";
 
 export class SetupUserDeviceUseCase {
     constructor(
-        private readonly connectionManager: OltConnectionManager
+        private readonly connectionManager: OltConnectionPort
     ) { }
 
     async execute(dto: OltRequestDTO): Promise<void> {
-
         const { sector, olt_name, pon, serial } = dto;
 
         const sectorConfig = SECTORS[sector];
@@ -29,10 +29,8 @@ export class SetupUserDeviceUseCase {
         );
 
         try {
-            const adapter = AdapterFactory.create(session, olt.brand);
-
+            const adapter = AdapterFactory.create(session as unknown as OltSession, olt.brand);
             await adapter.setupUserDevice(pon, serial);
-
         } finally {
             await session.close();
         }

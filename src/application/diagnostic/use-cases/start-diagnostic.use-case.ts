@@ -44,7 +44,7 @@ export class StartDiagnosticUseCase {
 
             id: randomUUID(),
 
-            conversationId: dto.conversationId,
+            conversationId: dto.conversationId ?? randomUUID(),
 
             context: {
                 technical: {

@@ -1,6 +1,6 @@
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js";
 import type { Brand } from "../../../../domain/olt/enums/brand.enum.js";
-import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter.js";
+import type { OltAdapterPort } from "../../../../application/ports/olt-adapter.port.js";
 import { Logger } from "../../../../shared/utils/logger.js";
 import { AdapterExecutionError } from "../../session/adapter-execution.error.js";
 import { CommandExecutor } from "../../session/command-executor.js";
@@ -12,7 +12,7 @@ import { parseOnuMac } from "./parsers/mac.parser.js";
 import { findOnuBySerial, parseOnuTable } from "./parsers/onu.parser.js";
 import { parseOnuRxPower } from "./parsers/power.parser.js";
 
-export class KingtypeAdapter implements IOltAdapter {
+export class KingtypeAdapter implements OltAdapterPort {
 
     constructor(private readonly session: OltSession, private readonly brand: Brand) { }
 

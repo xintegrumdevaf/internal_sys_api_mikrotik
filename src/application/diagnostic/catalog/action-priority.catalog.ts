@@ -5,6 +5,7 @@ export const ActionPriorityCatalog: Record<ActionType, number> = {
     [ActionType.REQUEST_INFORMATION]: 1,
     [ActionType.REBOOT_ONU]: 2,
     [ActionType.VERIFY_POWER]: 2,
+    [ActionType.HOOK_USER_DEVICE]: 1,
     [ActionType.SCHEDULE_VISIT]: 10,
     [ActionType.TRANSFER_SUPPORT]: 100
     // [ActionType.REQUEST_MEDIA]: {

@@ -1,3 +1,4 @@
+import type { OltAdapterPort } from "../../../application/ports/olt-adapter.port.js";
 import { Brand } from "../../../domain/olt/enums/brand.enum.js";
 import type { OltSession } from "../session/olt.session.js";
 import { CDataAdapter } from "./c-data/c-data.adapter.js";
@@ -6,7 +7,7 @@ import { KingtypeAdapter } from "./kingtype/kingtype.adapter.js";
 import { VSolAdapter } from "./v-sol/v-sol.adapter.js";
 
 export class AdapterFactory {
-    static create(session: OltSession, brand: string) {
+    static create(session: OltSession, brand: string): OltAdapterPort {
         switch (brand) {
             case Brand.VSOL:
                 return new VSolAdapter(session, brand)
