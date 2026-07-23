@@ -19,6 +19,12 @@ export const FindingCatalog: Record<FindingType, FindingSettings> = {
         status: DiagnosticStatus.CRITICAL
     },
 
+    [FindingType.ONT_NOT_AVAILABLE]: {
+        severity: Severity.CRITICAL,
+        stopExecution: true,
+        status: DiagnosticStatus.CRITICAL
+    },
+
     [FindingType.ONU_OFFLINE]: {
         severity: Severity.HIGH,
         stopExecution: true,

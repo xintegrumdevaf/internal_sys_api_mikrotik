@@ -80,9 +80,15 @@ export class KingtypeAdapter implements IOltAdapter {
             failedStep: failedStep ?? null
         }
     }
+
+    setupUserDevice(pon: string, serial: string): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
     rebootOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");
     }
+
     deleteOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");
     }

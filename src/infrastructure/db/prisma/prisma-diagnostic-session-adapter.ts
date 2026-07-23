@@ -44,7 +44,7 @@ export class PrismaDiagnosticSessionAdapter implements DiagnosticSessionReposito
     async update(session: DiagnosticSession): Promise<void> {
         const { id, status, context, currentStep, updatedAt } = session
         await prisma.diagnosticSession.update({
-            where: { conversationId: id }, data: {
+            where: { id: id }, data: {
                 id: id,
                 status: status,
                 context: context as InputJsonValue,

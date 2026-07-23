@@ -1,5 +1,6 @@
 
 import { WorkflowStep } from "../../../../domain/diagnostic/enums/workflow-step.enum.js";
+import { Logger } from "../../../../shared/utils/logger.js";
 import type { IWorkflowHandler } from "../interfaces/iworkflow.handler.js";
 import type { WorkflowContext } from "../workflow.context.js";
 
@@ -24,6 +25,8 @@ export class AskLedStatusHandler
 
         const msg =
             context.message.toLowerCase();
+
+        Logger.info(`MESSAGE IN LED HANDLER ${msg}`)
 
 
 

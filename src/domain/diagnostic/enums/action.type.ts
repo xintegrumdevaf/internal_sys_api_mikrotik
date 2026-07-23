@@ -6,6 +6,8 @@ export enum ActionType {
 
     REQUEST_INFORMATION = "request_information",
 
+    HOOK_USER_DEVICE = "hook_user_device",
+
     VERIFY_POWER = "verify_power",
 
     REBOOT_ONU = "reboot_onu",

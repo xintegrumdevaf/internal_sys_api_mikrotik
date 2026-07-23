@@ -1,3 +1,4 @@
+import { Logger } from "../../../shared/utils/logger.js";
 import type { IWorkflowHandler } from "./interfaces/iworkflow.handler.js";
 import type { WorkflowContext } from "./workflow.context.js";
 
@@ -7,7 +8,10 @@ export class WorkflowEngine {
 
         private readonly handlers: IWorkflowHandler[]
 
-    ) { }
+    ) {
+
+        Logger.info(`HANDLERS: ${JSON.stringify(handlers)}`)
+    }
 
     async execute(
         context: WorkflowContext

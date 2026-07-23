@@ -14,6 +14,8 @@ export enum WorkflowStep {
 
     SCHEDULE_VISIT = "schedule_visit",
 
-    TRANSFER_SUPPORT = "transfer_support"
+    TRANSFER_SUPPORT = "transfer_support",
+
+    ONU_NOT_AVAILABLE = "onu_not_available"
 
 }

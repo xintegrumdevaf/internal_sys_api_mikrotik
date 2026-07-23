@@ -5,6 +5,8 @@ export interface IOltAdapter {
 
     showOnu(pon: string, serial: string): Promise<TechnicalDataResponseDTO>;
 
+    setupUserDevice(pon: string, serial: string): Promise<void>
+
     rebootOnt(serial: string): Promise<void>;
 
     deleteOnt(serial: string): Promise<void>;

@@ -4,7 +4,11 @@ import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter
 import { Logger } from "../../../../shared/utils/logger.js";
 import { CommandExecutor } from "../../session/command-executor.js";
 import type { OltSession } from "../../session/olt.session.js";
+import { confirmOnuState } from "./commands/confirm-onu-state.command.js";
+import { createService } from "./commands/create-service-port.command.js";
 import { loginInterface } from "./commands/loginInterface.command.js";
+import { setupUserDevice } from "./commands/setup-user-device.command.js";
+import { showOntHookDevices } from "./commands/show-ont-hook-devices.command.js";
 import { showOntInfo } from "./commands/showOntInfo.command.js";
 import { showOntMac } from "./commands/showOntMac.command.js";
 import { showOntPower } from "./commands/showOntPower.command.js";
@@ -118,6 +122,62 @@ export class HuaweiAdapter implements IOltAdapter {
             failedStep: failedStep ?? null
         }
     }
+
+    async setupUserDevice(pon: string, serial: string): Promise<void> {
+        const executor = new CommandExecutor(this.session)
+        const result = await executor.runFlow([
+            {
+                step: "ont_to_hook",
+                command: () => showOntHookDevices(),
+                // parser: (output) => {
+                //     const onts = parseAutofindOnts(output);
+                //     Logger.info(`ONTS: ${JSON.stringify(onts)}`)
+                //     return findOntBySN(onts, serial) ?? null;
+                // },
+                interactions: [
+
+                    {
+                        wait: /\{\s*<cr>\|\|<K>\s*\}:/i,
+                        send: ""
+                    },
+
+                    {
+                        wait: /----\s*More/i,
+                        send: "q"
+                    }
+
+                ],
+            },
+            // {
+            //     step: "setup_ont",
+            //     command: (ctx) => setupUserDevice(ctx.ont_to_hook?.port, ctx.ont?.id, pon, serial),
+            // },
+            {
+                step: "quit",
+                command: () => "quit",
+            },
+            {
+                step: "quit",
+                command: () => "quit",
+            },
+            // {
+            //     step: "create_service",
+            //     command: (ctx) => createService(),
+            // },
+            // {
+            //     step: "confirm_state",
+            //     command: (ctx) => confirmOnuState(),
+            // },
+        ])
+
+        // const { history, failedStep, context: { ont_to_hook, ont } } = result
+        // Logger.info(`ONT TO HOOK: ${ont_to_hook}`)
+        // Logger.info(`ONT: ${ont}`)
+
+        throw new Error("Method not implemented.");
+    }
+
+
     rebootOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");
     }

@@ -1,4 +1,5 @@
 import type { DiagnosticSessionRepository } from "../../../domain/diagnostic/repositories/diagnostic-session.repository.js";
+import { Logger } from "../../../shared/utils/logger.js";
 import type { ContinueDiagnosticDTO } from "../dto/continue-diagnostic.dto.js";
 import { ContinueResponseMapper } from "../workflow/mappers/continue-response.mapper.js";
 import { WorkflowContext } from "../workflow/workflow.context.js";
@@ -21,6 +22,8 @@ export class ContinueDiagnosticUseCase {
                 dto.conversationId
             );
 
+        Logger.info(`SESSION FOUNDED: ${JSON.stringify(session)}`)
+
         if (!session) {
 
             throw new Error("Diagnostic session not found");
@@ -35,7 +38,13 @@ export class ContinueDiagnosticUseCase {
 
         );
 
+        Logger.info(`CONTEXT FOUNDED: ${JSON.stringify(context)}`)
+
         await this.workflow.execute(context);
+
+        const response = ContinueResponseMapper.toResponse(context);
+
+        Logger.info(`RESPONSE: ${JSON.stringify(response)}`)
 
         await this.repository.update(context.session);
 

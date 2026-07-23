@@ -3,13 +3,17 @@ import { loginInterface } from "./commands/loginInterface.command.js";
 import { showOntMac } from "./commands/showOntMac.command.js";
 import { showOntInfo } from "./commands/showOntInfo.command.js";
 import { showOntPower } from "./commands/showOntPower.command.js";
-import { parseOntInfo } from "./parsers/ont.parser.js";
+import { findOntBySN, parseAutofindOnts, parseOntInfo } from "./parsers/ont.parser.js";
 import { parseOntRxPower } from "./parsers/power.parser.js";
 import { parseMacTable } from "./parsers/mac.parser.js";
 import { CommandExecutor } from "../../session/command-executor.js";
 import type { IOltAdapter } from "../../../../domain/olt/interfaces/iolt.adapter.js";
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js";
 import type { Brand } from "../../../../domain/olt/enums/brand.enum.js";
+import { showOntHookDevices } from "./commands/show-ont-hook-devices.command.js";
+import { Logger } from "../../../../shared/utils/logger.js";
+import { setupUserDevice } from "./commands/setup-user-device.command.js";
+import { showOntHookBySn } from "./commands/show-ont-hook-by-sn.command.js";
 
 export class CDataAdapter implements IOltAdapter {
     constructor(private readonly session: OltSession, private readonly brand: Brand) { }
@@ -66,14 +70,14 @@ export class CDataAdapter implements IOltAdapter {
         return {
             brand: this.brand,
 
-            onu: ont,
+            onu: ont ?? null,
 
-            state: {
+            state: ont ? {
                 adminState: ont?.adminState ?? "unknown",
                 runState: ont?.runState ?? "unknown",
                 configState: ont?.configState ?? "unknown",
                 matchState: ont?.matchState ?? "unknown"
-            },
+            } : null,
 
             power: result.context.power ?? null,
 
@@ -85,28 +89,82 @@ export class CDataAdapter implements IOltAdapter {
         };
     }
 
-    // async showOnu(pon: string, serial: string): Promise<OnuResponse> {
-    //     await this.session.execute(loginInterface())
-    //     const raw = await this.session.execute(showOntInfo(serial))
-    //     const ont = parseOntInfo(raw)
+    async setupUserDevice(pon: string, serial: string): Promise<void> {
+        const executor = new CommandExecutor(this.session)
+        const result = await executor.runFlow([
+            {
+                step: "login",
+                command: () => loginInterface(),
+            },
+            {
+                step: "ont",
+                command: () => showOntHookBySn(pon, serial),
+                // parser: (output) => parseAutofindOnts(output)
+                parser: (output) => {
+                    const ont = parseAutofindOnts(output);
+                    // Logger.info(`ONTS: ${JSON.stringify(ont)}`)
+                    return ont ? ont[0] : null;
+                },
+                // command: () => showOntHookDevices(),
+                // parser: (output) => {
+                //     const onts = parseAutofindOnts(output);
+                //     Logger.info(`ONTS: ${JSON.stringify(onts)}`)
+                //     return findOntBySN(onts, serial) ?? null;
+                // },
+                // interactions: [
+                //     {
 
-    //     Logger.info(`ONT: ${JSON.stringify(ont)}`)
-    //     const powerRaw = await this.session.execute(showOntPower(pon, ont?.id!))
-    //     const power = parseOntRxPower(powerRaw)
-    //     Logger.info(`POWER : ${power}`)
-    //     await this.session.execute("exit")
-    //     const macRaw = await this.session.execute(showOntMac(`${ont?.frame}/${ont?.slot}/${ont?.pon}`))
-    //     const macs = parseMacTable(macRaw)
+                //         wait: /More\s*\( Press 'Q' to break \)/i,
+                //         send: " "
 
-    //     const mac = macs.find(mac => mac.onu === ont?.id)
-    //     Logger.info(`MAC : ${JSON.stringify(mac)}`)
+                //     }
 
-    //     return {} as OnuResponse
+                // ],
+            },
+            // {
+            //     step: "ont",
+            //     command: () => "",
+            //     parser: (_, ctx) => findOntBySN(ctx.ont_to_hook, serial) ?? null
+            // }
+            // {
+            //     step: "ont",
+            //     command: () => showOntInfo(serial),
+            //     parser: (_: any, ctx: any) => {
+            //         const ont = parseOntInfo(_);
 
-    // }
+            //         if (!ont) throw new Error("ONT no encontrada");
+
+            //         ctx.ont = ont; // 👈 guardas contexto
+            //         return ont;
+            //     },
+            //     required: true
+            // },
+            // {
+            //     step: "login",
+            //     command: () => loginInterface(),
+            // },
+            {
+                step: "setup_ont",
+                command: (ctx) => setupUserDevice(pon, ctx.ont?.number, serial),
+            },
+            {
+                step: "exit",
+                command: () => "exit",
+            },
+            {
+                step: "save",
+                command: () => "save",
+            },
+        ])
+
+        const { context: { ont } } = result
+        Logger.info(`ONT TO HOOK: ${JSON.stringify(ont)}`)
+    }
+
     rebootOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");
     }
+
     deleteOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");
     }

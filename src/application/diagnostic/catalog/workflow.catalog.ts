@@ -4,6 +4,16 @@ import { WorkflowStep } from "../../../domain/diagnostic/enums/workflow-step.enu
 
 export const WorkflowCatalog = {
 
+    [ActionType.HOOK_USER_DEVICE]: {
+
+        status: WorkflowStatus.WAITING_SYSTEM,
+
+        step: WorkflowStep.ONU_NOT_AVAILABLE,
+
+        stop: true
+
+    },
+
     [ActionType.ASK_LED_STATUS]: {
 
         status: WorkflowStatus.WAITING_USER,

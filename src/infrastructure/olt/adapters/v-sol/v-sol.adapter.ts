@@ -182,91 +182,9 @@ export class VSolAdapter implements IOltAdapter {
         };
     }
 
-    // async showOnu(pon: string, serial: string): Promise<OnuResponse> {
-    //     await this.session.execute(loginInterface(pon))
-    //     const executor = new CommandExecutor(this.session);
-
-    //     await executor.run(
-    //         "loginInterface",
-    //         loginInterface(pon),
-    //         () => true
-    //     );
-
-    //     const rows = await executor.run(
-    //         "showOnuInfo",
-    //         showOnuInfo(),
-    //         parseOnuTable
-    //     );
-
-    //     const onu = findByAuthInfo(rows, serial);
-
-    //     if (!onu) {
-    //         throw new AdapterExecutionError(
-    //             "ONU no encontrada",
-    //             executor.getHistory()
-    //         );
-    //     }
-
-    //     const state = await executor.run(
-    //         "showOnuState",
-    //         showOnuState(onu.id),
-    //         parseOnuState
-    //     );
-
-    //     if (!state) {
-    //         throw new AdapterExecutionError(
-    //             "Estado de la ONU no encontrado",
-    //             executor.getHistory()
-    //         );
-    //     }
-
-    //     const power = await executor.run(
-    //         "showPower",
-    //         showPower(onu.id),
-    //         parseOnuRxPower
-    //     );
-
-    //     return {
-    //         profile: this.profile,
-    //         onu,
-    //         state,
-    //         power: power?.rxPower ?? null
-    //     };
-    //     // const raw = await this.session.execute(showOnuInfo())
-    //     // const rows = parseOnuTable(raw)
-
-    //     // const onu = findByAuthInfo(rows, serial)
-
-    //     // Logger.info(`ONT: ${JSON.stringify(onu)}`)
-
-    //     // if (!onu) {
-    //     //     throw new Error("ONU no encontrada")
-    //     // }
-
-    //     // const stateRaw = await this.session.execute(showOnuState(onu.id))
-
-    //     // const state = parseOnuState(stateRaw)
-
-    //     // Logger.info(`STATE: ${JSON.stringify(state)}`)
-
-    //     // if (!state) {
-    //     //     throw new Error("Estado de la ONU no encontrada")
-    //     // }
-
-    //     // const powerRaw = await this.session.execute(showPower(onu.id))
-    //     // Logger.info(`POWER RAW: ${JSON.stringify(powerRaw)}`)
-    //     // const power = parseOnuRxPower(powerRaw)
-
-    //     // Logger.info(`POWER: ${JSON.stringify(power)}`)
-
-    //     // return {
-    //     //     profile: this.profile,
-    //     //     onu,
-    //     //     state,
-    //     //     power: power?.rxPower
-    //     // }
-
-    // }
+    setupUserDevice(pon: string, serial: string): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 
     rebootOnt(serial: string): Promise<void> {
         throw new Error("Method not implemented.");

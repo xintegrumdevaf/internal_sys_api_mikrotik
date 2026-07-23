@@ -2,6 +2,7 @@ export enum FindingType {
 
     // ONU
     ONU_NOT_FOUND = "onu_not_found",
+    ONT_NOT_AVAILABLE = "ont_not_available",
     ONU_OFFLINE = "onu_offline",
 
     // Potencia óptica
