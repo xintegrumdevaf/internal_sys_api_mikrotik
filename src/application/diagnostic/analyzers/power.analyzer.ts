@@ -2,7 +2,7 @@ import { ActionType } from "../../../domain/diagnostic/enums/action.type.js";
 import { FindingType } from "../../../domain/diagnostic/enums/finding.type.js";
 import { OpticalPowerLevel } from "../../../domain/diagnostic/enums/optical-power-level.enum.js";
 import type { DiagnosticContext } from "../../../domain/diagnostic/value-objects/diagnostic.context.js";
-import { DiagnosticRules } from "../catalog/diagnostic-rules.catalog.js";
+import { DiagnosticRules } from "../../../domain/diagnostic/rules/diagnostic.rules.js";
 import type { IDiagnosticAnalyzer } from "../interfaces/idiagnostic.analyzer.js";
 
 export class PowerAnalyzer implements IDiagnosticAnalyzer {

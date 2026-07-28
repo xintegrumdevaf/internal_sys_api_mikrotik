@@ -1,4 +1,4 @@
-import { FindingType } from "../../../domain/diagnostic/enums/finding.type.js";
+import { FindingType } from "../enums/finding.type.js";
 
 export const DiagnosticInstructions: Partial<Record<FindingType, string>> = {
 

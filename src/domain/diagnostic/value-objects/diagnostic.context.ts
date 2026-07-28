@@ -1,7 +1,7 @@
-import { ActionPriorityCatalog } from "../../../application/diagnostic/catalog/action-priority.catalog.js";
-import { DiagnosticInstructions } from "../../../application/diagnostic/catalog/diagnostic-instructions.catalog.js";
-import { FindingCatalog } from "../../../application/diagnostic/catalog/finding.catalog.js";
-import { WorkflowCatalog } from "../../../application/diagnostic/catalog/workflow.catalog.js";
+import { ActionPriorityCatalog } from "../map/action-priority.map.js";
+import { DiagnosticInstructions } from "../instructions/diagnostic.instructions.js";
+import { FindingCatalog } from "../definitions/finding.definitions.js";
+import { WorkflowCatalog } from "../definitions/workflow.definitions.js";
 import type { TechnicalDataResponseDTO } from "../../../application/olt/dto/technical-data.response.dto.js";
 
 import type { DiagnosticAction } from "../entities/diagnostic.action.js";

@@ -1,4 +1,4 @@
-import { ActionType } from "../../../domain/diagnostic/enums/action.type.js";
+import { ActionType } from "../enums/action.type.js";
 
 export const ActionPriorityCatalog: Record<ActionType, number> = {
     [ActionType.ASK_LED_STATUS]: 1,

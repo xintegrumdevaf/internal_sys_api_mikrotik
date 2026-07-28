@@ -1,6 +1,6 @@
-import { ActionType } from "../../../domain/diagnostic/enums/action.type.js";
-import { WorkflowStatus } from "../../../domain/diagnostic/enums/workflow-status.enum.js";
-import { WorkflowStep } from "../../../domain/diagnostic/enums/workflow-step.enum.js";
+import { ActionType } from "../enums/action.type.js";
+import { WorkflowStatus } from "../enums/workflow-status.enum.js";
+import { WorkflowStep } from "../enums/workflow-step.enum.js";
 
 export const WorkflowCatalog = {
 

@@ -1,7 +1,7 @@
 
-import { DiagnosticStatus } from "../../../domain/diagnostic/enums/diagnostic.status.js";
-import { FindingType } from "../../../domain/diagnostic/enums/finding.type.js";
-import { Severity } from "../../../domain/diagnostic/enums/severity.js";
+import { DiagnosticStatus } from "../enums/diagnostic.status.js";
+import { FindingType } from "../enums/finding.type.js";
+import { Severity } from "../enums/severity.js";
 
 export interface FindingSettings {
     severity: Severity;
