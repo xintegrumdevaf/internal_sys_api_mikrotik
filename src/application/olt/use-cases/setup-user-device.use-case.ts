@@ -10,16 +10,16 @@ export class SetupUserDeviceUseCase {
     ) { }
 
     async execute(dto: OltRequestDTO): Promise<void> {
-        const { sector, olt_name, pon, serial } = dto;
+        const { sector, oltName, pon, serial } = dto;
 
         const sectorConfig = SECTORS[sector];
         if (!sectorConfig) {
             throw new Error(`Sector ${sector} no existe`);
         }
 
-        const olt = sectorConfig.olts[olt_name];
+        const olt = sectorConfig.olts[oltName];
         if (!olt) {
-            throw new Error(`OLT ${olt_name} no existe`);
+            throw new Error(`OLT ${oltName} no existe`);
         }
 
         const session = await this.connectionManager.connect(

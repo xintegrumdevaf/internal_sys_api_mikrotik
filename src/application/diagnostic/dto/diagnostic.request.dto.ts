@@ -2,6 +2,6 @@ export interface DiagnosticRequestDTO {
   conversationId?: string
   sector: string
   serial: string
-  olt_name: string
+  oltName: string
   pon: string
 }

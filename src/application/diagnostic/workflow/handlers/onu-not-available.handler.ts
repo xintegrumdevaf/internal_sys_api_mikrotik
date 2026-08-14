@@ -17,15 +17,15 @@ export class OnuNotAvailableHandler implements ISystemHandler {
 
     async execute(dto: DiagnosticRequestDTO): Promise<void> {
 
-        const { sector, olt_name, pon, serial } = dto;
+        const { sector, oltName, pon, serial } = dto;
 
         Logger.info(
-            `Registrando ONU. Sector=${sector}, OLT=${olt_name}, PON=${pon}, SERIAL=${serial}`
+            `Registrando ONU. Sector=${sector}, OLT=${oltName}, PON=${pon}, SERIAL=${serial}`
         );
 
         await this.setupUserDeviceUseCase.execute({
             sector,
-            olt_name,
+            oltName,
             pon,
             serial
         });

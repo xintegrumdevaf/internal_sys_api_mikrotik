@@ -17,10 +17,6 @@ export class StartDiagnosticUseCase {
     ) { }
 
     async execute(dto: DiagnosticRequestDTO): Promise<DiagnosticResponseDTO> {
-        // const technicalData = await this.collectTechnicalData.execute(dto)
-
-        // const diagnostic = await this.diagnosticEngine.execute(technicalData)
-
         let technicalData = await this.collectTechnicalData.execute(dto);
 
         let diagnostic = await this.diagnosticEngine.execute(technicalData);
@@ -39,12 +35,15 @@ export class StartDiagnosticUseCase {
 
 
         const now = new Date();
+        const conversationId = dto.conversationId ?? randomUUID();
+        const existing = await this.repository.findByConversationId(conversationId);
 
         const session: DiagnosticSession = {
+            // Reutilizar el id de sesión si ya hay una para esta conversación
+            // (UNIQUE conversationId + continue-diagnostic).
+            id: existing?.id ?? randomUUID(),
 
-            id: randomUUID(),
-
-            conversationId: dto.conversationId ?? randomUUID(),
+            conversationId,
 
             context: {
                 technical: {
@@ -80,7 +79,7 @@ export class StartDiagnosticUseCase {
 
             status: diagnostic.workflow.status,
 
-            createdAt: now,
+            createdAt: existing?.createdAt ?? now,
 
             updatedAt: now,
 
@@ -88,7 +87,7 @@ export class StartDiagnosticUseCase {
 
         };
 
-        // await this.repository.save(session)
+        await this.repository.save(session)
 
         return DiagnosticResponseMapper.toResponse(diagnostic)
     }

@@ -4,7 +4,7 @@ export interface OltRequestDTO {
 
     serial: string;
 
-    olt_name: string;
+    oltName: string;
 
     pon: string;
 

@@ -1,8 +1,9 @@
 import { ValidationError } from "./validation-error.js"
 
 export interface DiagnosticRequestValidation {
+  conversationId: string,
   sector: string
-  olt_name: string
+  oltName: string
   pon: string
   serial: string
 }
@@ -11,11 +12,14 @@ export function validateDiagnosticRequest(body: unknown): DiagnosticRequestValid
   const errors: string[] = []
   const data = body as Record<string, unknown>
 
+  if (!data.conversationId || typeof data.conversationId !== "string" || data.conversationId.trim() === "") {
+    errors.push("conversationId")
+  }
   if (!data.sector || typeof data.sector !== "string" || data.sector.trim() === "") {
     errors.push("sector")
   }
-  if (!data.olt_name || typeof data.olt_name !== "string" || data.olt_name.trim() === "") {
-    errors.push("olt_name")
+  if (!data.oltName || typeof data.oltName !== "string" || data.oltName.trim() === "") {
+    errors.push("oltName")
   }
   if (!data.pon || typeof data.pon !== "string" || data.pon.trim() === "") {
     errors.push("pon")

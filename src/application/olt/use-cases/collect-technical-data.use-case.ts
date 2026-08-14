@@ -8,17 +8,17 @@ export class CollectTechnicalDataUseCase {
     constructor(private readonly connectionManager: OltConnectionPort) { }
 
     async execute(dto: OltRequestDTO) {
-        const { sector, olt_name, serial, pon } = dto
+        const { sector, oltName, serial, pon } = dto
         const sectorConfig = SECTORS[sector];
 
         if (!sectorConfig) {
             throw new Error(`Sector ${sector} no existe`);
         }
 
-        const olt = sectorConfig.olts[olt_name];
+        const olt = sectorConfig.olts[oltName];
 
         if (!olt) {
-            throw new Error(`OLT ${olt_name} no existe en ${sector}`);
+            throw new Error(`OLT ${oltName} no existe en ${sector}`);
         }
 
         const session = await this.connectionManager.connect(sectorConfig.host, sectorConfig.port, olt)
