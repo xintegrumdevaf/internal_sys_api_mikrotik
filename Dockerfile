@@ -1,10 +1,10 @@
-# Usamos Node.js LTS en Alpine para una imagen ligera
-FROM node:20-alpine
+# Usamos Node.js LTS (v22) en Alpine para una imagen ligera
+FROM node:22-alpine
 
 WORKDIR /app
 
-# Instalar pnpm globalmente
-RUN npm install -g pnpm
+# Instalar pnpm en la versión especificada
+RUN npm install -g pnpm@11.22.0
 
 # Copiar archivos de configuración de dependencias
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

@@ -1,0 +1,10 @@
+node_modules
+.git
+.github
+.env
+.env.template
+docker-compose.yml
+.agents
+AGENTS.md
+docs
+dist
