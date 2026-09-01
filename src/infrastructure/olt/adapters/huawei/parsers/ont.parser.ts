@@ -1,6 +1,10 @@
 import type { HuaweiOntInfo } from "../types/huawei-ont-info.type.js";
 
-export function parseOntInfo(output: string): HuaweiOntInfo {
+export function parseOntInfo(output: string): HuaweiOntInfo | null {
+
+    if (/The required ONT does not exist|does not exist|Failure/i.test(output)) {
+        return null;
+    }
 
     const get = (field: string): string | null => {
 
@@ -15,15 +19,21 @@ export function parseOntInfo(output: string): HuaweiOntInfo {
 
     };
 
-    const fsp = get("F/S/P") ?? "";
+    const fsp = get("F/S/P");
+    if (!fsp) return null;
 
-    const [, frame = "0", slot = "0", pon = "0"] =
-        fsp.match(/(\d+)\/(\d+)\/(\d+)/) ?? [];
+    const fspMatch = fsp.match(/(\d+)\/(\d+)\/(\d+)/);
+    if (!fspMatch) return null;
 
-    const sn = get("SN") ?? "";
+    const [, frame = "0", slot = "0", pon = "0"] = fspMatch;
+
+    const sn = get("SN");
+    if (!sn) return null;
 
     const serialMatch =
-        sn.match(/^([A-F0-9]+)\s+\((.*?)\)$/i);
+        sn.match(/^([A-F0-9]+)(?:\s+\((.*?)\))?/i);
+
+    if (!serialMatch) return null;
 
     return {
 
@@ -41,9 +51,9 @@ export function parseOntInfo(output: string): HuaweiOntInfo {
 
         matchState: get("Match state") ?? "",
 
-        serial: serialMatch?.[1] ?? "",
+        serial: serialMatch[1] ?? "",
 
-        vendorSerial: serialMatch?.[2] ?? "",
+        vendorSerial: serialMatch[2] ?? "",
 
         managementMode: get("Management mode") ?? "",
 

@@ -1,3 +1,3 @@
-export const loginInterface = (slot: string) => {
-    return `interface gpon 0/${slot}`;
+export const loginInterface = (slot: string | number): string => {
+  return `interface gpon 0/${slot}`
 }

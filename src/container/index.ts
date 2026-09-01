@@ -1,5 +1,11 @@
+import { GetMikrotikClientQueueUseCase } from "../application/mikrotik/use-cases/get-mikrotik-client-queue.use-case.js"
 import { CollectTechnicalDataUseCase } from "../application/olt/use-cases/collect-technical-data.use-case.js"
+import { GetDeviceStatusUseCase } from "../application/olt/use-cases/get-device-status.use-case.js"
+import { ReactivateDeviceUseCase } from "../application/olt/use-cases/reactivate-device.use-case.js"
 import { SetupUserDeviceUseCase } from "../application/olt/use-cases/setup-user-device.use-case.js"
+import { GetMikrotikClientStatusUseCase } from "../application/mikrotik/use-cases/get-mikrotik-client-status.use-case.js"
+import { ReactivateMikrotikClientUseCase } from "../application/mikrotik/use-cases/reactivate-mikrotik-client.use-case.js"
+import { CutMikrotikClientUseCase } from "../application/mikrotik/use-cases/cut-mikrotik-client.use-case.js"
 import { MacAnalyzer } from "../application/diagnostic/analyzers/mac.analyzer.js"
 import { OnuAnalyzer } from "../application/diagnostic/analyzers/onu.analyzer.js"
 import { PowerAnalyzer } from "../application/diagnostic/analyzers/power.analyzer.js"
@@ -13,13 +19,23 @@ import { SystemWorkflowEngine } from "../application/diagnostic/workflow/system-
 import { WorkflowEngine } from "../application/diagnostic/workflow/workflow.engine.js"
 import { PrismaDiagnosticSessionAdapter } from "../infrastructure/db/prisma/prisma-diagnostic-session-adapter.js"
 import { OltConnectionManager } from "../infrastructure/olt/connection/olt-connection-manager.js"
+import { MikrotikSshAdapter } from "../infrastructure/mikrotik/mikrotik-ssh.adapter.js"
 import { DiagnosticController } from "../presentation/controllers/diagnostic.controller.js"
 import { OltController } from "../presentation/controllers/olt.controller.js"
+import { MikrotikController } from "../presentation/controllers/mikrotik.controller.js"
 
 const connectionManager = new OltConnectionManager()
+const mikrotikAdapter = new MikrotikSshAdapter()
 
 const collectTechnicalData = new CollectTechnicalDataUseCase(connectionManager)
+const getDeviceStatusUseCase = new GetDeviceStatusUseCase(connectionManager)
+const reactivateDeviceUseCase = new ReactivateDeviceUseCase(connectionManager)
 const setupUserDeviceUseCase = new SetupUserDeviceUseCase(connectionManager)
+
+const getMikrotikClientStatusUseCase = new GetMikrotikClientStatusUseCase(mikrotikAdapter)
+const getMikrotikClientQueueUseCase = new GetMikrotikClientQueueUseCase(mikrotikAdapter)
+const reactivateMikrotikClientUseCase = new ReactivateMikrotikClientUseCase(mikrotikAdapter)
+const cutMikrotikClientUseCase = new CutMikrotikClientUseCase(mikrotikAdapter)
 
 const onuAnalyzer = new OnuAnalyzer()
 const runStateAnalyzer = new RunStateAnalyzer()
@@ -43,5 +59,17 @@ const onuLedHandler = new AskLedStatusHandler()
 const workflowEngine = new WorkflowEngine([onuLedHandler])
 const continueDiagnostic = new ContinueDiagnosticUseCase(diagnosticRepository, workflowEngine)
 
-export const oltController = new OltController(collectTechnicalData)
+export const oltController = new OltController(
+  collectTechnicalData,
+  getDeviceStatusUseCase,
+  reactivateDeviceUseCase
+)
+export const mikrotikController = new MikrotikController(
+  getMikrotikClientStatusUseCase,
+  getMikrotikClientQueueUseCase,
+  reactivateMikrotikClientUseCase,
+  cutMikrotikClientUseCase
+)
 export const diagnosticController = new DiagnosticController(startDiagnostic, continueDiagnostic)
+
+

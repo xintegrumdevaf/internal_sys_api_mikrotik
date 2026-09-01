@@ -117,7 +117,7 @@ export const SECTORS: SectorConfig = {
     //         }
     //     }
     // },
-    quitoSur: {
+    santaBarbara: {
         host: "200.24.136.33",
         port: 8332,
         olts: {

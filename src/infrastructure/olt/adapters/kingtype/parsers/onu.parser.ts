@@ -18,10 +18,13 @@ export function parseOnuTable(output: string): OnuTableRow[] {
             !line.startsWith("-") &&
             !line.startsWith("onu id") &&
             !line.startsWith("ready") &&
+            !line.startsWith("===") &&
+            !line.startsWith("rx pkt") &&
             /^g\d+\/\d+:\d+/.test(line)
         )
         .map(line => {
-            const parts = line.split(/\s+/);
+            const cleanLine = line.replace(/={3,}.*$/i, "").trim();
+            const parts = cleanLine.split(/\s+/);
 
             return {
                 onuId: parts[0]!,

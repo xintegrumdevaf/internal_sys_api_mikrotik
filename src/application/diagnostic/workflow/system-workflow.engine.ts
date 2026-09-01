@@ -1,6 +1,7 @@
 import type { WorkflowStep } from "../../../domain/diagnostic/enums/workflow-step.enum.js";
 import type { DiagnosticRequestDTO } from "../dto/diagnostic.request.dto.js";
-import type { ISystemHandler } from "./interfaces/isystem.handler copy.js";
+import type { ISystemHandler } from "./interfaces/isystem.handler.js";
+
 
 export class SystemWorkflowEngine {
 

@@ -1,0 +1,8 @@
+export enum DeviceAdministrativeStatus {
+  ENABLED = "ENABLED",
+  DISABLED = "DISABLED",
+  SUSPENDED = "SUSPENDED",
+  OPTICAL_FAULT = "OPTICAL_FAULT",
+  NOT_FOUND = "NOT_FOUND",
+  UNKNOWN = "UNKNOWN"
+}

@@ -35,8 +35,13 @@ export const loginSteps = (olt: Olt): Step[] => [
                 continue: true
             },
             {
+                name: "password_expired",
+                regex: /password has expired/i,
+                continue: false
+            },
+            {
                 name: "invalid_credentials",
-                regex: /Username or password invalid/i,
+                regex: /Username or password invalid|Reenter times have reached the upper limit|>>User name:/i,
                 continue: false
             }
         ]

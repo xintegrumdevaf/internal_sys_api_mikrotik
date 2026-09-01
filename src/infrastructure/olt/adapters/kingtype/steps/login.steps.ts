@@ -115,6 +115,28 @@ export const loginSteps = (olt: Olt): Step[] => [
                 continue: true
             }
         ]
+    },
+
+    // ==========================
+    // DISABLE CONSOLE LOGGING
+    // ==========================
+    {
+        expect: /\(config.*\)[#>]\s*$/i,
+
+        command: "no logging console",
+
+        success: [
+            {
+                name: "logging_disabled",
+                regex: /\(config.*\)[#>]\s*$/i,
+                continue: true
+            },
+            {
+                name: "ignored",
+                regex: /Unknown command|Invalid/i,
+                continue: true
+            }
+        ]
     }
 
 ]

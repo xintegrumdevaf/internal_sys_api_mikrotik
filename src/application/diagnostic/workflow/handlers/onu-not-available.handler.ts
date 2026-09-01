@@ -2,7 +2,8 @@ import { WorkflowStep } from "../../../../domain/diagnostic/enums/workflow-step.
 import { Logger } from "../../../../shared/utils/logger.js";
 import type { DiagnosticRequestDTO } from "../../dto/diagnostic.request.dto.js";
 import type { SetupUserDeviceUseCase } from "../../../olt/use-cases/setup-user-device.use-case.js";
-import type { ISystemHandler } from "../interfaces/isystem.handler copy.js";
+import type { ISystemHandler } from "../interfaces/isystem.handler.js";
+
 
 
 export class OnuNotAvailableHandler implements ISystemHandler {

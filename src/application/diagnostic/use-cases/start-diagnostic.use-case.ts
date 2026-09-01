@@ -7,8 +7,9 @@ import type { DiagnosticEngine } from "../services/diagnostic.engine.js";
 import type { DiagnosticResponseDTO } from "../dto/diagnostic.response.dto.js";
 import { DiagnosticResponseMapper } from "../mappers/diagnostic-response.mapper.js";
 import { WorkflowStatus } from "../../../domain/diagnostic/enums/workflow-status.enum.js";
-import type { ISystemHandler } from "../workflow/interfaces/isystem.handler copy.js";
+import type { ISystemHandler } from "../workflow/interfaces/isystem.handler.js";
 import type { SystemWorkflowEngine } from "../workflow/system-workflow.engine.js";
+
 
 export class StartDiagnosticUseCase {
     constructor(
@@ -17,21 +18,8 @@ export class StartDiagnosticUseCase {
     ) { }
 
     async execute(dto: DiagnosticRequestDTO): Promise<DiagnosticResponseDTO> {
-        let technicalData = await this.collectTechnicalData.execute(dto);
-
-        let diagnostic = await this.diagnosticEngine.execute(technicalData);
-
-        while (
-            diagnostic.workflow.status === WorkflowStatus.WAITING_SYSTEM
-        ) {
-
-            await this.systemWorkflow.execute(diagnostic?.workflow?.currentStep, dto);
-
-            technicalData = await this.collectTechnicalData.execute(dto);
-
-            diagnostic = await this.diagnosticEngine.execute(technicalData);
-
-        }
+        const technicalData = await this.collectTechnicalData.execute(dto);
+        const diagnostic = await this.diagnosticEngine.execute(technicalData);
 
 
         const now = new Date();

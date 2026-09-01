@@ -4,6 +4,8 @@ export const DiagnosticInstructions: Partial<Record<FindingType, string>> = {
 
     [FindingType.ONU_NOT_FOUND]: "No fue posible localizar la ONU registrada en la OLT. Verifica el número de serie, la configuración del servicio o la provisión del equipo.",
 
+    [FindingType.ONT_NOT_AVAILABLE]: "No fue posible localizar la ONT en la OLT. Verifica el número de serie, la configuración del servicio o la provisión del equipo.",
+
     [FindingType.ONU_OFFLINE]: "Para continuar con la revisión, verifique su equipo de Internet. Si no tiene luces encendidas, confirme que esté conectado a la corriente y enciéndalo si es necesario. Espere unos minutos y revise si el servicio se restablece. Si tiene luces encendidas, indíquenos sus colores (por ejemplo, todas verdes o alguna roja) y, si la luz roja tiene un nombre o símbolo, indíquenos cuál es.",
 
     [FindingType.POWER_NOT_AVAILABLE]: "La OLT no pudo obtener la potencia óptica de la ONU. Esto normalmente ocurre cuando el equipo está fuera de línea o no responde.",
