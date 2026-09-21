@@ -1,9 +1,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { config as loadEnv } from "dotenv";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { Logger } from "../../../shared/utils/logger.js";
-import { PrismaClient } from "./generated/client.js";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
 
 // Cargar .env del proyecto mikrotik_api con override: si el proceso quedó
 // con DATABASE_URL vieja (usuario postgres), el archivo gana.

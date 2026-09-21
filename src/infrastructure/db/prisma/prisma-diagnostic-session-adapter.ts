@@ -1,4 +1,4 @@
-import type { InputJsonValue } from "@prisma/client/runtime/client";
+import type { Prisma } from "@prisma/client";
 import type { DiagnosticSession } from "../../../domain/diagnostic/entities/diagnostic-session.js";
 import type { DiagnosticSessionRepository } from "../../../domain/diagnostic/repositories/diagnostic-session.repository.js";
 import { prisma } from "./prisma-client.js";
@@ -39,7 +39,7 @@ export class PrismaDiagnosticSessionAdapter implements DiagnosticSessionReposito
         id,
         conversationId,
         status,
-        context: context as InputJsonValue,
+        context: context as Prisma.InputJsonValue,
         createdAt,
         currentStep,
         expiresAt,
@@ -47,7 +47,7 @@ export class PrismaDiagnosticSessionAdapter implements DiagnosticSessionReposito
       },
       update: {
         status,
-        context: context as InputJsonValue,
+        context: context as Prisma.InputJsonValue,
         currentStep,
         expiresAt,
         updatedAt,
@@ -61,7 +61,7 @@ export class PrismaDiagnosticSessionAdapter implements DiagnosticSessionReposito
       where: { id },
       data: {
         status,
-        context: context as InputJsonValue,
+        context: context as Prisma.InputJsonValue,
         currentStep,
         updatedAt,
         ...(expiresAt !== undefined ? { expiresAt } : {}),
