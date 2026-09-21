@@ -6,8 +6,9 @@ WORKDIR /app
 # Instalar pnpm en la versión especificada
 RUN npm install -g pnpm@11.22.0
 
-# Copiar archivos de configuración de dependencias
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copiar archivos de configuración de dependencias y esquemas de Prisma
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml prisma.config.ts* ./
+COPY prisma ./prisma/
 
 # Instalar todas las dependencias (incluyendo devDependencies para compilar TS y ejecutar Prisma con tsx)
 RUN pnpm install --frozen-lockfile
