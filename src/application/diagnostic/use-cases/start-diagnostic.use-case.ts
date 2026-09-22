@@ -34,6 +34,13 @@ export class StartDiagnosticUseCase {
             conversationId,
 
             context: {
+                request: {
+                    sector: dto.sector,
+                    serial: dto.serial,
+                    oltName: dto.oltName,
+                    pon: dto.pon
+                },
+
                 technical: {
 
                     brand: diagnostic.technical.brand,

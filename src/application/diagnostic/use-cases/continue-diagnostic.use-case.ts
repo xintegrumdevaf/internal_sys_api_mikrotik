@@ -1,3 +1,4 @@
+import { SessionNotFoundError } from "../../../domain/diagnostic/exceptions/session-not-found.error.js";
 import type { DiagnosticSessionRepository } from "../../../domain/diagnostic/repositories/diagnostic-session.repository.js";
 import { Logger } from "../../../shared/utils/logger.js";
 import type { ContinueDiagnosticDTO } from "../dto/continue-diagnostic.dto.js";
@@ -26,7 +27,7 @@ export class ContinueDiagnosticUseCase {
 
         if (!session) {
 
-            throw new Error("Diagnostic session not found");
+            throw new SessionNotFoundError(dto.conversationId);
 
         }
 

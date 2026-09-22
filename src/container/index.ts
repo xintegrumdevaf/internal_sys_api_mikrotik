@@ -14,6 +14,10 @@ import { DiagnosticEngine } from "../application/diagnostic/services/diagnostic.
 import { ContinueDiagnosticUseCase } from "../application/diagnostic/use-cases/continue-diagnostic.use-case.js"
 import { StartDiagnosticUseCase } from "../application/diagnostic/use-cases/start-diagnostic.use-case.js"
 import { AskLedStatusHandler } from "../application/diagnostic/workflow/handlers/ask-led-status.handler.js"
+import { VerifyPowerHandler } from "../application/diagnostic/workflow/handlers/verify-power.handler.js"
+import { RecheckHandler } from "../application/diagnostic/workflow/handlers/recheck.handler.js"
+import { ScheduleVisitHandler } from "../application/diagnostic/workflow/handlers/schedule-visit.handler.js"
+import { TransferSupportHandler } from "../application/diagnostic/workflow/handlers/transfer-support.handler.js"
 import { OnuNotAvailableHandler } from "../application/diagnostic/workflow/handlers/onu-not-available.handler.js"
 import { SystemWorkflowEngine } from "../application/diagnostic/workflow/system-workflow.engine.js"
 import { WorkflowEngine } from "../application/diagnostic/workflow/workflow.engine.js"
@@ -56,7 +60,18 @@ const startDiagnostic = new StartDiagnosticUseCase(
 )
 
 const onuLedHandler = new AskLedStatusHandler()
-const workflowEngine = new WorkflowEngine([onuLedHandler])
+const verifyPowerHandler = new VerifyPowerHandler()
+const recheckHandler = new RecheckHandler(collectTechnicalData, diagnosticEngine)
+const scheduleVisitHandler = new ScheduleVisitHandler()
+const transferSupportHandler = new TransferSupportHandler()
+
+const workflowEngine = new WorkflowEngine([
+  onuLedHandler,
+  verifyPowerHandler,
+  recheckHandler,
+  scheduleVisitHandler,
+  transferSupportHandler
+])
 const continueDiagnostic = new ContinueDiagnosticUseCase(diagnosticRepository, workflowEngine)
 
 export const oltController = new OltController(
