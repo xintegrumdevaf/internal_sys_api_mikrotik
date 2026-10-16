@@ -50,10 +50,16 @@ jobs:
       - name: Trigger Coolify Webhook Deployment
         if: success()
         run: |
+          AUTH_HEADER=()
+          if [ -n "${{ secrets.COOLIFY_API_TOKEN }}" ]; then
+            AUTH_HEADER=(-H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}")
+          fi
           if [ "${{ github.ref_name }}" = "main" ]; then
             echo "Triggering redeploy for production (main)..."
-            curl -s -X GET "${{ secrets.COOLIFY_WEBHOOK_URL_MAIN }}"
+            WEBHOOK_URL="${{ secrets.COOLIFY_WEBHOOK_URL_MAIN || secrets.COOLIFY_WEBHOOK_MAIN }}"
+            curl -sS --max-time 60 -X GET "$WEBHOOK_URL" "${AUTH_HEADER[@]}"
           elif [ "${{ github.ref_name }}" = "test" ]; then
             echo "Triggering redeploy for staging (test)..."
-            curl -s -X GET "${{ secrets.COOLIFY_WEBHOOK_URL_TEST }}"
+            WEBHOOK_URL="${{ secrets.COOLIFY_WEBHOOK_URL_TEST || secrets.COOLIFY_WEBHOOK_TEST }}"
+            curl -sS --max-time 60 -X GET "$WEBHOOK_URL" "${AUTH_HEADER[@]}"
           fi
