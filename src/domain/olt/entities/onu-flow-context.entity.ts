@@ -4,7 +4,7 @@ import type { OnuState } from "./onu-state.entity.js";
 import type { Onu } from "./onu.entity.js";
 
 export interface OnuFlowContext {
-    rows: Record<string, any>[];
+    rows: Record<string, unknown>[];
     onu: Onu;
     state: OnuState;
     power?: OnuRxPower;
