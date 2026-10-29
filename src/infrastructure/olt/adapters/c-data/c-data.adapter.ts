@@ -7,9 +7,11 @@ import { activateOnt } from "./commands/activate-ont.command.js"
 import { deactivateOnt } from "./commands/deactivate-ont.command.js"
 import { setupUserDevice } from "./commands/setup-user-device.command.js"
 import { showOntHookBySn } from "./commands/show-ont-hook-by-sn.command.js"
+import { showEponOltAll } from "./commands/show-epon-onu.command.js"
 import { parseAutofindOnts, parseOntInfo, type HuaweiOntInfo } from "./parsers/ont.parser.js"
 import { parseOntRxPower } from "./parsers/power.parser.js"
 import { parseMacTable } from "./parsers/mac.parser.js"
+import { parseEponOnuTable, findEponOnu } from "./parsers/epon-onu.parser.js"
 import { CommandExecutor } from "../../session/command-executor.js"
 import type { OltAdapterPort } from "../../../../application/ports/olt-adapter.port.js"
 import type { TechnicalDataResponseDTO } from "../../../../application/olt/dto/technical-data.response.dto.js"
@@ -40,6 +42,90 @@ export class CDataAdapter implements OltAdapterPort {
   ) {}
 
   async showOnu(pon: string, serial: string): Promise<TechnicalDataResponseDTO> {
+    const cleanPon = pon.includes("/") ? pon.split("/").pop() ?? pon : pon
+    const numericPon = cleanPon.replace(/[^\d]/g, "") || "1"
+
+    // 1. Try EPON query first: "show olt <pon> all"
+    try {
+      const eponCmd = showEponOltAll(numericPon)
+      const eponResult = await this.session.execute(eponCmd)
+      const output = eponResult.output || ""
+
+      const isBadCommand = /Bad command|Invalid command|Syntax error/i.test(output)
+      const isEponTable =
+        /Port\s+ONU\s+MAC/i.test(output) ||
+        /Total:\s*\d+/i.test(output) ||
+        /show\s+olt\s+\d+\s+all/i.test(output)
+
+      if (isEponTable && !isBadCommand) {
+        const onus = parseEponOnuTable(output)
+        const found = findEponOnu(onus, serial)
+
+        if (found) {
+          const isOnline = found.state.toLowerCase() === "online"
+          const isPowerdown = found.state.toLowerCase() === "powerdown"
+          const controlFlag = isPowerdown ? "powerdown" : isOnline ? "active" : "deactivated"
+
+          const onuInfo = {
+            frame: 0,
+            slot: 0,
+            pon: found.port,
+            id: found.onuId,
+            serial: found.mac,
+            controlFlag,
+            runState: found.state,
+            configState: "success",
+            matchState: "match"
+          } as unknown as HuaweiOntInfo
+
+          return {
+            brand: this.brand,
+            onu: onuInfo,
+            state: {
+              adminState: controlFlag,
+              runState: found.state,
+              configState: "success",
+              matchState: "match"
+            },
+            power: null,
+            mac: found.mac,
+            _history: [
+              {
+                step: "epon_show_all",
+                command: eponCmd,
+                raw: output,
+                success: true
+              }
+            ],
+            failedStep: null,
+            error: null
+          }
+        }
+
+        // EPON recognized, but ONU was not found on this PON port
+        return {
+          brand: this.brand,
+          onu: null,
+          state: null,
+          power: null,
+          mac: null,
+          _history: [
+            {
+              step: "epon_show_all",
+              command: eponCmd,
+              raw: output,
+              success: true
+            }
+          ],
+          failedStep: "ont",
+          error: `ONU con identificador/MAC "${serial}" no encontrada en el puerto PON ${numericPon}.`
+        }
+      }
+    } catch (eponErr) {
+      Logger.warn(`Error en verificación C-Data EPON, continuando a GPON: ${(eponErr as Error).message}`)
+    }
+
+    // 2. Fallback to standard GPON flow
     const executor = new CommandExecutor(this.session)
 
     const result = await executor.runFlow<CDataFlowContext>([
@@ -120,8 +206,8 @@ export class CDataAdapter implements OltAdapterPort {
         controlFlag: null,
         rawRunState: null,
         canBeReactivated: false,
-        reason: "ONT no encontrada en la OLT C-Data con el serial provisto.",
-        recommendation: "Verificar el serial y el puerto PON asignado.",
+        reason: "ONT no encontrada en la OLT C-Data con el identificador (Serial/MAC) provisto.",
+        recommendation: "Verificar el serial/MAC y el puerto PON asignado.",
         _history: techData._history,
         failedStep: techData.failedStep
       }
@@ -138,7 +224,19 @@ export class CDataAdapter implements OltAdapterPort {
     let reason = ""
     let recommendation = ""
 
-    if (controlFlag === "deactivated" || controlFlag === "disable") {
+    if (runState === "online") {
+      administrativeStatus = DeviceAdministrativeStatus.ENABLED
+      operationalStatus = DeviceOperationalStatus.ONLINE
+      canBeReactivated = false
+      reason = "ONT habilitada administrativamente y en línea en la OLT C-Data."
+      recommendation = "El equipo se encuentra funcionando normalmente."
+    } else if (runState === "powerdown") {
+      administrativeStatus = DeviceAdministrativeStatus.DISABLED
+      operationalStatus = DeviceOperationalStatus.OFFLINE
+      canBeReactivated = false
+      reason = "ONT apagada o sin energía eléctrica (Power Down)."
+      recommendation = "Verificar que el equipo esté conectado a la toma de corriente y encendido."
+    } else if (controlFlag === "deactivated" || controlFlag === "disable") {
       administrativeStatus = DeviceAdministrativeStatus.DISABLED
       operationalStatus = runState === "online" ? DeviceOperationalStatus.ONLINE : DeviceOperationalStatus.OFFLINE
       canBeReactivated = true
@@ -153,7 +251,7 @@ export class CDataAdapter implements OltAdapterPort {
         recommendation = "El equipo se encuentra funcionando normalmente."
       } else {
         operationalStatus = DeviceOperationalStatus.OFFLINE
-        if (power == null || power <= -28) {
+        if (power != null && power <= -28) {
           administrativeStatus = DeviceAdministrativeStatus.OPTICAL_FAULT
           canBeReactivated = false
           reason = "ONT fuera de línea por falla o corte en la señal óptica (LOS)."
@@ -165,11 +263,17 @@ export class CDataAdapter implements OltAdapterPort {
           recommendation = "Verificar conexión física o enviar orden de reactivación."
         }
       }
+    } else if (runState === "offline") {
+      administrativeStatus = DeviceAdministrativeStatus.OPTICAL_FAULT
+      operationalStatus = DeviceOperationalStatus.OFFLINE
+      canBeReactivated = false
+      reason = "ONT fuera de línea en la OLT C-Data (posible falla óptica o corte de fibra)."
+      recommendation = "Revisar los niveles de potencia óptica y la continuidad física de la fibra."
     } else {
       administrativeStatus = DeviceAdministrativeStatus.UNKNOWN
       operationalStatus = runState === "online" ? DeviceOperationalStatus.ONLINE : DeviceOperationalStatus.OFFLINE
       canBeReactivated = true
-      reason = `Estado de control C-Data: ${ont.controlFlag}`
+      reason = `Estado reportado por C-Data: ${ont.controlFlag ?? ont.runState}`
       recommendation = "Revisar configuración de la ONT en la OLT."
     }
 
