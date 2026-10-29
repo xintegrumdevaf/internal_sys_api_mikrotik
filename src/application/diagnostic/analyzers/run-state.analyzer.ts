@@ -10,13 +10,12 @@ export class RunStateAnalyzer implements IDiagnosticAnalyzer {
     }
 
     async analyze(context: DiagnosticContext): Promise<void> {
-        const runState = context?.technical?.state?.runState
+        const runState = context?.technical?.state?.runState?.toLowerCase()
 
-        if (runState?.toLowerCase() !== DiagnosticRules.runState.offline.toLowerCase()) {
+        if (runState !== DiagnosticRules.runState.offline.toLowerCase() && runState !== "powerdown") {
             return;
         }
 
         context.report(FindingType.ONU_OFFLINE, ActionType.ASK_LED_STATUS)
     }
-
 }
