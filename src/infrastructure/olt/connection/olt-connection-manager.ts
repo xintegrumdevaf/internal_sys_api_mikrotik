@@ -1,5 +1,6 @@
 import type { OltConnectionPort } from "../../../application/ports/olt-connection.port.js";
 import { MIKROTIK_CREDENTIALS } from "../../../config/sectors.js";
+import { NetworkTopologyService } from "../../network/network-topology.service.js";
 import { Logger } from "../../../shared/utils/logger.js";
 import { OltSession } from "../session/olt.session.js";
 import { SSHService } from "../../ssh/ssh.service.js";
@@ -10,7 +11,7 @@ import { loginSteps as vsolLoginSteps } from "../adapters/v-sol/steps/login.step
 import { loginSteps as huaweiLoginSteps } from "../adapters/huawei/steps/login.steps.js";
 import { loginSteps as kingtypeLoginSteps } from "../adapters/kingtype/steps/login.steps.js";
 
-const LOGIN_STEPS = {
+export const LOGIN_STEPS = {
     [Brand.CDATA]: cdataLoginSteps,
     [Brand.HUAWEI]: huaweiLoginSteps,
     [Brand.VSOL]: vsolLoginSteps,

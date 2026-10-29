@@ -1,6 +1,7 @@
 import type { OltConnectionPort } from "../../ports/olt-connection.port.js";
 import type { OltSession } from "../../../infrastructure/olt/session/olt.session.js";
 import { SECTORS } from "../../../config/sectors.js";
+import { NetworkTopologyService } from "../../../infrastructure/network/network-topology.service.js";
 import { AdapterFactory } from "../../../infrastructure/olt/adapters/adapter.factory.js";
 import type { OltRequestDTO } from "../dto/olt.request.dto.js";
 import { SectorNotFoundError, OltNotFoundError } from "../../../domain/olt/exceptions/index.js";
@@ -10,7 +11,7 @@ export class CollectTechnicalDataUseCase {
 
     async execute(dto: OltRequestDTO) {
         const { sector, oltName, serial, pon } = dto
-        const sectorConfig = SECTORS[sector];
+        const sectorConfig = (await NetworkTopologyService.getSector(sector)) ?? SECTORS[sector];
 
         if (!sectorConfig) {
             throw new SectorNotFoundError(sector);

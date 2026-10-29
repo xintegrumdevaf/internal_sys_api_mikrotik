@@ -18,3 +18,42 @@ model DiagnosticSession {
 
   @@index([conversationId])
 }
+
+model NetworkRouter {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  displayName  String       @map("display_name")
+  host         String
+  port         Int          @default(8322)
+  username     String       @default("ANGEL")
+  passwordEnc  String       @map("password_enc")
+  passwordIv   String       @map("password_iv")
+  passwordTag  String       @map("password_tag")
+  isActive     Boolean      @default(true) @map("is_active")
+  olts         NetworkOlt[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@map("network_routers")
+}
+
+model NetworkOlt {
+  id           String        @id @default(uuid())
+  routerId     String        @map("router_id")
+  router       NetworkRouter @relation(fields: [routerId], references: [id], onDelete: Cascade)
+  name         String
+  displayName  String        @map("display_name")
+  ip           String
+  brand        String
+  username     String        @default("admin")
+  passwordEnc  String        @map("password_enc")
+  passwordIv   String        @map("password_iv")
+  passwordTag  String        @map("password_tag")
+  slot         String?
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@unique([routerId, name])
+  @@map("network_olts")
+}

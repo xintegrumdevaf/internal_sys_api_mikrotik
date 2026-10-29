@@ -3,6 +3,7 @@ import cors from "cors"
 import oltRoutes from "./presentation/routers/olt.routes.js"
 import mikrotikRoutes from "./presentation/routers/mikrotik.routes.js"
 import diagnosticRoutes from "./presentation/routers/diagnostic.routes.js"
+import networkRoutes from "./presentation/routers/network.routes.js"
 import { errorHandler } from "./presentation/middlewares/error-handler.middleware.js"
 import { metricsMiddleware, getMetricsHandler } from "./shared/monitoring/metrics.js"
 
@@ -22,6 +23,7 @@ app.use("/api/v1/olt", oltRoutes)
 
 app.use("/api/v1/mikrotik", mikrotikRoutes)
 app.use("/api/v1/diagnostic", diagnosticRoutes)
+app.use("/api/v1/network", networkRoutes)
 
 app.use(errorHandler)
 

@@ -5,6 +5,7 @@ import type { MikrotikActionResultResponseDTO } from "../../application/mikrotik
 import type { MikrotikClientStatusResponseDTO } from "../../application/mikrotik/dto/mikrotik-client-status.response.dto.js"
 import { MikrotikClientStatus } from "../../domain/mikrotik/enums/mikrotik-client-status.enum.js"
 import { MIKROTIK_CREDENTIALS, SECTORS } from "../../config/sectors.js"
+import { NetworkTopologyService } from "../network/network-topology.service.js"
 import { Logger } from "../../shared/utils/logger.js"
 import { SSHService } from "../ssh/ssh.service.js"
 import { parseMikrotikAddressList } from "./parsers/address-list.parser.js"

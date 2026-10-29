@@ -1,6 +1,5 @@
-import type { Olt } from "../../../../../domain/olt/entities/sector.entity.js"
-import type { Step } from "../../../../../domain/olt/entities/step.entity.js"
-
+import type { Olt } from "../../../../../domain/olt/entities/sector.entity.js";
+import type { Step } from "../../../../../domain/olt/entities/step.entity.js";
 
 export const loginSteps = (olt: Olt): Step[] => [
     {
@@ -11,6 +10,21 @@ export const loginSteps = (olt: Olt): Step[] => [
                 name: "username",
                 regex: /User name:/i,
                 continue: true
+            },
+            {
+                name: "connection_reset",
+                regex: /Connection reset by peer|read\(\) failed/i,
+                continue: false
+            },
+            {
+                name: "connection_refused",
+                regex: /Connection refused|could not connect/i,
+                continue: false
+            },
+            {
+                name: "user_locked",
+                regex: /locked and you cannot log on/i,
+                continue: false
             }
         ]
     },
@@ -22,6 +36,11 @@ export const loginSteps = (olt: Olt): Step[] => [
                 name: "password",
                 regex: /User password:/i,
                 continue: true
+            },
+            {
+                name: "user_locked",
+                regex: /locked and you cannot log on/i,
+                continue: false
             }
         ]
     },
@@ -37,6 +56,11 @@ export const loginSteps = (olt: Olt): Step[] => [
             {
                 name: "password_expired",
                 regex: /password has expired/i,
+                continue: false
+            },
+            {
+                name: "user_locked",
+                regex: /locked and you cannot log on/i,
                 continue: false
             },
             {

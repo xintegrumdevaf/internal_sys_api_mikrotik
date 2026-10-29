@@ -1,3 +1,5 @@
+import { DomainError } from "../../shared/errors/domain-error.js";
+import { OltAuthError } from "../../domain/olt/exceptions/olt-auth.error.js";
 import { Client, type ClientChannel, type ConnectConfig } from "ssh2"
 import { Logger } from "../../shared/utils/logger.js"
 import type { Step } from "../../domain/olt/entities/step.entity.js"
@@ -219,7 +221,40 @@ export class SSHService {
 
       if (match.continue === false) {
         Logger.error(`SSH step fallido: ${match.name}`, "SSH")
-        throw new Error(`SSH step failed: ${match.name}`)
+        if (match.name === "connection_reset") {
+          throw new OltAuthError(
+            "OLT_CONNECTION_RESET",
+            "La OLT reinició la conexión (Connection reset by peer). El equipo rechazó el enlace Telnet debido a bloqueo temporal por intentos fallidos de autenticación o contraseña expirada."
+          );
+        }
+        if (match.name === "connection_refused") {
+          throw new OltAuthError(
+            "OLT_CONNECTION_REFUSED",
+            "Conexión Telnet rechazada por la OLT. Verifica que el servicio Telnet esté activo y sea accesible desde el MikroTik."
+          );
+        }
+        if (match.name === "user_locked") {
+          throw new OltAuthError(
+            "OLT_USER_LOCKED",
+            "El usuario o la IP están temporalmente bloqueados en la OLT (The IP and user have been locked). Requiere desbloquear o esperar el tiempo de penalización del equipo."
+          );
+        }
+        if (match.name === "password_expired") {
+          throw new OltAuthError(
+            "OLT_PASSWORD_EXPIRED",
+            "La contraseña del usuario de la OLT ha expirado en el equipo físico (password has expired). Se debe renovar la clave en la OLT o actualizarla en la configuración."
+          );
+        }
+        if (match.name === "invalid_credentials") {
+          throw new OltAuthError(
+            "OLT_INVALID_CREDENTIALS",
+            "Credenciales inválidas en la OLT: El equipo rechazó el usuario o la contraseña configurados."
+          );
+        }
+        throw new OltAuthError(
+          "SSH_STEP_FAILED",
+          `Paso de conexión fallido en la OLT (${match.name})`
+        );
       }
     }
 
