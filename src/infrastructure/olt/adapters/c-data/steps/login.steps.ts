@@ -26,6 +26,7 @@ export const loginSteps = (olt: Olt): Step[] => [
             }
         ]
     },
+
     // ==========================
     // USUARIO
     // ==========================
@@ -40,8 +41,9 @@ export const loginSteps = (olt: Olt): Step[] => [
             }
         ]
     },
+
     // ==========================
-    // PASSWORD
+    // PASSWORD -> PROMPT DE TERMINAL (# o >)
     // ==========================
     {
         expect: /User password:|Password:/i,
@@ -56,53 +58,6 @@ export const loginSteps = (olt: Olt): Step[] => [
                 name: "invalid_credentials",
                 regex: /Login incorrect|invalid|fail/i,
                 continue: false
-            }
-        ]
-    },
-    // ==========================
-    // ENABLE
-    // ==========================
-    {
-        expect: /[>#]\s*$/i,
-        command: "enable",
-        success: [
-            {
-                name: "enable_password",
-                regex: /Password:|User password:/i,
-                continue: true
-            },
-            {
-                name: "enabled",
-                regex: /#\s*$/i,
-                continue: true
-            }
-        ]
-    },
-    // ==========================
-    // ENABLE PASSWORD
-    // ==========================
-    {
-        expect: /Password:|User password:/i,
-        command: olt.password,
-        success: [
-            {
-                name: "enabled",
-                regex: /#\s*$/i,
-                continue: true
-            }
-        ]
-    },
-    // ==========================
-    // CONFIG MODE
-    // ==========================
-    {
-        expect: /#\s*$/i,
-        command: "config",
-        success: [
-            {
-                name: "config_mode",
-                regex: /\(config.*\)#\s*$/i,
-                continue: true
             }
         ]
     }

@@ -63,6 +63,11 @@ export const loginSteps = (olt: Olt): Step[] => [
                 name: "enabled",
                 regex: /#\s*$/i,
                 continue: true
+            },
+            {
+                name: "already_enabled",
+                regex: /Bad command[\s\S]*#\s*$|Unknown command[\s\S]*#\s*$/i,
+                continue: true
             }
         ]
     },
@@ -84,6 +89,11 @@ export const loginSteps = (olt: Olt): Step[] => [
             {
                 name: "config",
                 regex: /\(config.*\)#\s*$/i,
+                continue: true
+            },
+            {
+                name: "already_config_or_epon",
+                regex: /Bad command[\s\S]*#\s*$|Unknown command[\s\S]*#\s*$/i,
                 continue: true
             }
         ]
