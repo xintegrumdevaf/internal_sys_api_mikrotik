@@ -346,6 +346,23 @@ export class NetworkTopologyService {
         };
       }
 
+      // Si la marca es 's/m' (Sin Marca) o vacía, fallar explícitamente: no existe secuencia de login
+      const brandNormalized = (olt.brand || "").toLowerCase().trim();
+      if (!brandNormalized || brandNormalized === "s/m" || brandNormalized === Brand.SM) {
+        return {
+          success: false,
+          latencyMs: 0,
+          message: "Fallo de autenticación con la OLT",
+          error: `La OLT '${olt.displayName || olt.name}' tiene marca 'S/M' (Sin Marca) y no tiene secuencia de login configurada. Selecciona una marca válida (V-SOL, HUAWEI, C-DATA, KINGTYPE) para realizar el login en la terminal.`,
+        };
+      }
+
+      const routerPassword = VaultService.decrypt({
+        ciphertext: router.passwordEnc,
+        iv: router.passwordIv,
+        tag: router.passwordTag,
+      });
+
       const oltPassword = VaultService.decrypt({
         ciphertext: olt.passwordEnc,
         iv: olt.passwordIv,
@@ -360,7 +377,10 @@ export class NetworkTopologyService {
       };
 
       const manager = new OltConnectionManager();
-      const session = await manager.connect(router.host, router.port, oltEntity);
+      const session = await manager.connect(router.host, router.port, oltEntity, {
+        username: router.username,
+        password: routerPassword,
+      });
       const latencyMs = Date.now() - start;
       await session.close();
 
