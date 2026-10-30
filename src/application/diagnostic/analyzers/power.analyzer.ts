@@ -6,29 +6,19 @@ import { DiagnosticRules } from "../../../domain/diagnostic/rules/diagnostic.rul
 import type { IDiagnosticAnalyzer } from "../interfaces/idiagnostic.analyzer.js";
 
 export class PowerAnalyzer implements IDiagnosticAnalyzer {
-    // supports(context: DiagnosticContext): boolean {
-    //     return context.technical.power != null
-    // }
-
     supports(context: DiagnosticContext): boolean {
-        return true;
+        return context.technical.power != null;
     }
 
     async analyze(context: DiagnosticContext): Promise<void> {
         const power = context.technical.power
 
         if (power == null) {
-
             context.report(
-
                 FindingType.POWER_NOT_AVAILABLE,
-
                 ActionType.TRANSFER_SUPPORT
-
             );
-
             return;
-
         }
 
         const powerLevel = this.getOpticalPowerLevel(power)
@@ -38,27 +28,17 @@ export class PowerAnalyzer implements IDiagnosticAnalyzer {
         }
 
         if (powerLevel === OpticalPowerLevel.WARNING) {
-
             context.report(
-
                 FindingType.LOW_POWER,
-
                 ActionType.SCHEDULE_VISIT
-
             );
-
         }
 
         if (powerLevel === OpticalPowerLevel.CRITICAL) {
-
             context.report(
-
                 FindingType.CRITICAL_LOW_POWER,
-
                 ActionType.SCHEDULE_VISIT
-
             );
-
         }
     }
 
@@ -79,5 +59,4 @@ export class PowerAnalyzer implements IDiagnosticAnalyzer {
 
         return OpticalPowerLevel.UNKNOWN;
     }
-
 }
