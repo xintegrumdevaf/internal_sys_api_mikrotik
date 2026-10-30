@@ -48,7 +48,7 @@ Contiene los casos de uso (orquestación) que realizan operaciones del negocio.
 * `dto/`: Objetos de transferencia de datos limpios, sin lógica.
 
 ### `presentation/`
-Expone el sistema al exterior (en este caso, n8n a través de REST).
+Expone el sistema al exterior (consumido por la API del ISP y por n8n a través de REST).
 * `controllers/`: Manejadores de HTTP, validan los DTOs de entrada y llaman a los casos de uso.
 * `routes/`: Registro de endpoints y ruteo con Express.
 * `middlewares/`: Autenticación, logging de peticiones, manejo global de errores.

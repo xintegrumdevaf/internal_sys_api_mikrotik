@@ -32,7 +32,7 @@ Establecer convenciones obligatorias de desarrollo y diseño de API para garanti
 ---
 
 ## 4. API REST Specifications
-La API es consumida únicamente por **n8n**, por lo que se priorizan contratos JSON limpios y estables.
+La API es consumida por la **API del ISP** y por **n8n**, por lo que se priorizan contratos JSON limpios, consistentes y estables.
 
 ### Diseño de Endpoints
 * **Recursos**: Utilizar nombres en plural para los recursos (ej. `/api/v1/diagnostics`, `/api/v1/sessions`).

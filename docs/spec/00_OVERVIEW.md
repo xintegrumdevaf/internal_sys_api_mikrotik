@@ -6,13 +6,13 @@ Network Automation API
 ## Descripción
 Network Automation API es una API REST desarrollada en Node.js y TypeScript cuyo propósito es abstraer toda la lógica de automatización y diagnóstico de dispositivos de red utilizados por un proveedor de servicios de Internet (ISP).
 
-La API es consumida exclusivamente por **n8n**, el cual actúa únicamente como orquestador de procesos. Toda la lógica de negocio, reglas de comunicación con los dispositivos (OLT, ONT, Routers, etc.), validaciones y diagnósticos residen dentro de esta API. n8n nunca debe contener lógica de negocio.
+La API es consumida por la **API del ISP** (backend del sistema principal) y por **n8n** (como orquestador de procesos). Toda la lógica de negocio, reglas de comunicación con los dispositivos (OLT, ONT, Routers, etc.), validaciones y diagnósticos residen dentro de esta API. Ni la API del ISP ni n8n deben contener lógica de bajo nivel de hardware ni parsing de red.
 
 ## Objetivos
 El proyecto debe permitir:
 * Automatizar procesos técnicos de red.
-* Centralizar la lógica de negocio.
-* Reducir la complejidad de los workflows de n8n.
+* Centralizar la lógica de negocio y de red.
+* Reducir la complejidad de los workflows de n8n y de los servicios del backend del ISP.
 * Facilitar la incorporación de nuevos fabricantes de hardware.
 * Permitir nuevos diagnósticos sin modificar el núcleo de la aplicación.
 * Mantener sesiones persistentes con los equipos de red.
@@ -20,20 +20,19 @@ El proyecto debe permitir:
 * Ser 100% testeable mediante aislamiento e inyección de dependencias.
 
 ## Filosofía del Sistema
-La API debe ser el único lugar donde exista inteligencia del sistema.
+La API debe ser el único lugar donde exista inteligencia y control sobre el hardware de red.
 
-### n8n nunca debe contener:
-* Reglas de negocio.
-* Parsing de salidas de comandos CLI/SSH.
-* Lógica de decisión o ruteo complejo de negocio.
-* Transformaciones complejas.
-* Validaciones complejas de red.
+### Los clientes consumidores (API del ISP y n8n) nunca deben contener:
+* Reglas de interacción de bajo nivel de red.
+* Parsing de salidas de comandos CLI/SSH/Telnet.
+* Lógica de decisión o ruteo de hardware GPON / MikroTik.
+* Transformaciones complejas de telemetría de red.
+* Validaciones físicas de enlaces de red.
 
-### n8n únicamente:
-* Recibe solicitudes externas.
-* Llama a los endpoints de la API.
-* Utiliza las respuestas tipadas.
-* Continúa el flujo de orquestación.
+### Los clientes consumidores únicamente:
+* Reciben solicitudes externas (usuarios, operadores o disparadores de eventos).
+* Llaman a los endpoints REST de esta API.
+* Utilizan las respuestas tipadas (DTOs) para continuar el flujo de orquestación o responder al cliente final.
 
 ---
 

@@ -1,6 +1,6 @@
 # Network Automation & Diagnostic API — Guía de Arquitectura y Referencia
 
-Esta API es una plataforma de automatización y diagnóstico de red para ISPs que integra la gestión de **Capa 2 / GPON (OLTs Huawei, V-SOL, C-Data, Kingtype)** y **Capa 3 / Tráfico y Facturación (MikroTik RouterOS)** bajo una **Arquitectura Hexagonal (Puertos y Adaptadores)** estricta en Node.js y TypeScript.
+Esta API es una plataforma de automatización y diagnóstico de red para ISPs que integra la gestión de **Capa 2 / GPON (OLTs Huawei, V-SOL, C-Data, Kingtype)** y **Capa 3 / Tráfico y Facturación (MikroTik RouterOS)** bajo una **Arquitectura Hexagonal (Puertos y Adaptadores)** estricta en Node.js y TypeScript. Es consumida tanto por la **API del ISP** (backend principal) como por los workflows de **n8n** (orquestador).
 
 ---
 

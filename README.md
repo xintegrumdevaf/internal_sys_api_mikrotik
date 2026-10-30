@@ -1,6 +1,6 @@
 # ISP MikroTik & OLT Management Service
 
-Microservice providing automated provisioning, diagnostics, and telemetry for ISP network infrastructure, supporting **MikroTik RouterOS** (via RouterOS API & SSH) and **V-Sol OLTs** (via Telnet/CLI).
+Microservice providing automated provisioning, diagnostics, and telemetry for ISP network infrastructure, supporting **MikroTik RouterOS** (via RouterOS API & SSH) and **OLTs (Huawei, V-Sol, C-Data, Kingtype)** (via Telnet/CLI). Consumed by the **ISP Core API** (`internal_sys_comunication_backend`) and **n8n** automation workflows.
 
 ---
 
